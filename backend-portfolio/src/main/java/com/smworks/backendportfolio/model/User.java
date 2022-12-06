@@ -3,20 +3,24 @@ package com.smworks.backendportfolio.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
-    @Column
+    @Column(name = "first_name")
     private String firstName;
-    @Column
+    @Column(name = "last_name")
     private String lastName;
     @Column
     private String email;
-    @Column
+    @Column(name = "phone_nr")
     private String phoneNr;
     @Column
     private String role;
+    @Column
+    private boolean active;
 
     public User() {
     }
@@ -76,5 +80,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
