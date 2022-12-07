@@ -52,8 +52,25 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Object> updateUserDetails(User user) {
-        return null;
+    public ResponseEntity<Object> updateUserDetails(User user, Long userId, String email) {
+        try {
+            if (userRepository.existsById(user.getUserId())) {
+                if (!email.isEmpty()) {
+                    userRepository.updateUserByEmail(user.getUserId(), user.getFirstName(), user.getLastName(),
+                            user.getPhoneNr(), user.getRole(), user.isActive(), user.getEmail());
+                    return new ResponseEntity<>("Updated record using user email" + user.getEmail(), HttpStatus.OK);
+                }
+                else {
+                    userRepository.updateUserById(user.getFirstName(), user.getLastName(), user.getEmail(),
+                            user.getPhoneNr(), user.getRole(), user.isActive(), user.getUserId());
+                    return new ResponseEntity<>("Updated record using user ID" + user.getUserId(), HttpStatus.OK);
+                }
+            } else
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("Could not update user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Object> deleteUserRecord(User user) {

@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+    public ResponseEntity<Object> updateUser(@RequestBody User user, Long userId, String email) {
         return null;
     }
 
