@@ -57,13 +57,26 @@ public class UserService {
     }
 
     public ResponseEntity<Object> deleteUserRecord(User user) {
-        return null;
+        Optional<User> userOptional = userRepository.findById(user.getUserId());
+        try {
+            if (userOptional.isPresent())
+                return new ResponseEntity<>("User deleted", HttpStatus.NO_CONTENT);
+            else
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Could not delete user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Object> createUserRecord(User user) {
         try {
-            userRepository.save(user);
-            return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.CREATED);
+            if (userRepository.findByEmail(user.getEmail()).isPresent())
+                return new ResponseEntity<>("Email " + user.getEmail() + " is in use already",
+                        HttpStatus.CONFLICT);
+            else {
+                userRepository.save(user);
+                return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.CREATED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>("Could not create new user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
