@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public ResponseEntity<Object> updateUser(@RequestBody User user, Long userId, String email) {
-        return null;
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        return userService.updateUserDetails(user, user.getUserId(), user.getEmail());
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
