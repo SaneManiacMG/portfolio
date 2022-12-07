@@ -35,7 +35,7 @@ public class UserController {
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     public ResponseEntity<Object> deleteUser(@RequestBody User user) {
-        return null;
+        return userService.deleteUserRecord(user);
     }
 
     @PostMapping(value = "/addUser")
