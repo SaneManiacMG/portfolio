@@ -29,7 +29,7 @@ public class UserService {
     public ResponseEntity<Object> findByUserId(User user) {
         Optional<User> userOptional = userRepository.findById(user.getUserId());
         try {
-            if (userOptional.isPresent())
+            if (userRepository.existsById(user.getUserId()))
                 return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
             else
                 return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
@@ -42,7 +42,7 @@ public class UserService {
     public ResponseEntity<Object> findByEmail(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         try {
-            if (userOptional.isPresent())
+            if (userRepository.findByEmail(user.getEmail()).isPresent())
                 return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
             else
                 return new ResponseEntity<>("Email not found", HttpStatus.NOT_FOUND);
@@ -57,10 +57,11 @@ public class UserService {
     }
 
     public ResponseEntity<Object> deleteUserRecord(User user) {
-        Optional<User> userOptional = userRepository.findById(user.getUserId());
         try {
-            if (userOptional.isPresent())
-                return new ResponseEntity<>("User deleted", HttpStatus.NO_CONTENT);
+            if (userRepository.existsById(user.getUserId())) {
+                userRepository.deleteById(user.getUserId());
+                return new ResponseEntity<>("User with ID " + user.getUserId() + " deleted", HttpStatus.OK);
+            }
             else
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
