@@ -2,39 +2,32 @@ package com.smworks.backendportfolio.controller;
 
 import com.smworks.backendportfolio.model.User;
 import com.smworks.backendportfolio.repository.UserRepository;
+import com.smworks.backendportfolio.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping(value = "/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = ("/getAllUsers"), method = RequestMethod.GET)
     public ResponseEntity<Object> findAllUsers() {
-        try {
-            if (!userRepository.findAll().isEmpty())
-                return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
-            else
-                return new ResponseEntity<>("No users found", HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error has occurred retrieving result set",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return userService.findAllUsers();
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.POST)
     public ResponseEntity<Object> findUserById(@RequestBody User user) {
-        return null;
+        return userService.findByUserId(user);
     }
 
     @RequestMapping(value = "/findByEmail", method = RequestMethod.POST)
     public ResponseEntity<Object> findUserByEmail(@RequestBody User user) {
-        return null;
+        return userService.findByEmail(user);
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
@@ -49,6 +42,6 @@ public class UserController {
 
     @PostMapping(value = "/addUser")
     public ResponseEntity<Object> createUser(@RequestBody User user) {
-        return null;
+        return userService.createUserRecord(user);
     }
 }
