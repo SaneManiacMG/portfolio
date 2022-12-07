@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,9 +18,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public ResponseEntity<Object> findAllUsers() {
+        List<User> allUsers = new ArrayList<>();
         try {
-            if (!userRepository.findAll().isEmpty()) {
-                return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+            if (!allUsers.isEmpty()) {
+                return new ResponseEntity<>(allUsers.addAll(userRepository.findAll()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No users found", HttpStatus.NO_CONTENT);
             }
@@ -30,11 +33,8 @@ public class UserService {
     public ResponseEntity<Object> findByUserId(User user) {
         Optional<User> userOptional = userRepository.findById(user.getUserId());
         try {
-            if (userOptional.isPresent()) {
-                return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
-            }
+            if (userOptional.isPresent()) return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+            else return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occurred performing user ID lookup",
                     HttpStatus.INTERNAL_SERVER_ERROR);
