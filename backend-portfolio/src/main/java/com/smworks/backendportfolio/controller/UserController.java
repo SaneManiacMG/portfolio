@@ -1,17 +1,11 @@
 package com.smworks.backendportfolio.controller;
 
 import com.smworks.backendportfolio.model.User;
-import com.smworks.backendportfolio.repository.UserRepository;
 import com.smworks.backendportfolio.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -20,7 +14,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/getAllUsers", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Object> findAllUsers() {
         return userService.findAllUsers();
     }
