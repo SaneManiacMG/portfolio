@@ -7,7 +7,6 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long userId;
     @Column(name = "first_name")
     private String firstName;
@@ -25,13 +24,14 @@ public class User {
     public User() {
     }
 
-    public User(long userId, String firstName, String lastName, String email, String phoneNr, String role) {
+    public User(long userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNr = phoneNr;
         this.role = role;
+        this.active = active;
     }
 
     public long getUserId() {

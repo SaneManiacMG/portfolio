@@ -30,7 +30,7 @@ public class UserController {
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
-        return userService.updateUserDetails(user, user.getUserId(), user.getEmail());
+        return userService.updateUserDetails(user);
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
