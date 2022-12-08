@@ -13,7 +13,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = ("/getAllUsers"), method = RequestMethod.GET)
+    @RequestMapping(value = ("/getAllUsers"), method = RequestMethod.POST)
     public ResponseEntity<Object> findAllUsers() {
         return userService.findAllUsers();
     }
