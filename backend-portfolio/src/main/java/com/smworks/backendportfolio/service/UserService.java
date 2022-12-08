@@ -55,15 +55,12 @@ public class UserService {
 
     public ResponseEntity<Object> updateUserDetails(User user) {
         try {
-            if ((userRepository.findByEmail(user.getEmail()).isPresent())
-                    || (userRepository.existsById(user.getUserId()))) {
+            if (userRepository.findById(user.getUserId()).isPresent()) {
                 userRepository.save(new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.OK);
-            }
-            else {
-                return new ResponseEntity<>("User not found",
-                        HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>("Email already taken", HttpStatus.CONFLICT);
@@ -77,8 +74,7 @@ public class UserService {
             if (userRepository.existsById(user.getUserId())) {
                 userRepository.deleteById(user.getUserId());
                 return new ResponseEntity<>("User deleted", HttpStatus.OK);
-            }
-            else
+            } else
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,13 +83,13 @@ public class UserService {
 
     public ResponseEntity<Object> createUserRecord(User user) {
         try {
-            if ((userRepository.findByEmail(user.getEmail()).isEmpty())
+            if ((!userRepository.findByEmail(user.getEmail()).isPresent())
                     && (!userRepository.existsById(user.getUserId()))) {
                 userRepository.save(new User(user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
-                return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.CREATED);
-            }
-            else {
+                return new ResponseEntity<>(userRepository.findByEmail(user.getEmail()), HttpStatus.CREATED);
+            } else {
+                System.out.println("Something wrong with condition0");
                 return new ResponseEntity<>("User ID or email is already taken",
                         HttpStatus.CONFLICT);
             }
