@@ -8,11 +8,8 @@
 	"item": [
 		{
 			"name": "getAllUsers",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -44,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\": 1\r\n}",
+					"raw": "{\r\n    \"userId\": 184743100812\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -100,7 +97,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\": 2,\r\n    \"firstName\": \"dup\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"dup.acc@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
+					"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"test@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -128,7 +125,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\": 1,\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"testacc@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
+					"raw": "{\r\n    \"userId\": \"341930140812\",\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"test222222@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
