@@ -54,28 +54,6 @@ public class UserService {
     }
 
     public ResponseEntity<Object> updateUserDetails(User user) {
-        /*try {
-            if (userRepository.existsById(user.getUserId()) &&
-                    !userRepository.findByEmail(user.getEmail()).isPresent()) {
-                //then we are updating the email and other properties
-                Optional<User> userOptional = userRepository.findById(user.getUserId());
-                userRepository.deleteById(user.getUserId());
-                userRepository.save(user);
-                return new ResponseEntity<>("Updated using user ID as identifier\n\n" +
-                        userOptional.get(), HttpStatus.OK);
-            } else if (userRepository.findByEmail(user.getEmail()).isPresent() &&
-                    !userRepository.findById(user.getUserId()).isPresent()) {
-                //we are updating the id and other properties
-                Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
-                userRepository.deleteByEmail(user.getEmail());
-                userRepository.save(user);
-                return new ResponseEntity<>("Updated using user email as identifier\n\n" +
-                        userOptional.get(), HttpStatus.OK);
-            } else
-                return new ResponseEntity<>("Could not find user id or email", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
         try {
             if ((userRepository.findByEmail(user.getEmail()).isPresent())
                     || (userRepository.existsById(user.getUserId()))) {
@@ -109,7 +87,7 @@ public class UserService {
 
     public ResponseEntity<Object> createUserRecord(User user) {
         try {
-            if ((!userRepository.findByEmail(user.getEmail()).isPresent())
+            if ((userRepository.findByEmail(user.getEmail()).isEmpty())
                     && (!userRepository.existsById(user.getUserId()))) {
                 userRepository.save(new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
