@@ -23,6 +23,11 @@ public class UserController {
         return userService.findByUserId(user);
     }
 
+    @RequestMapping(value = "/findByUsername", method = RequestMethod.POST)
+    public ResponseEntity<Object> findByUsername(@RequestBody User user) {
+        return userService.findByUsername(user);
+    }
+
     @RequestMapping(value = "/findByEmail", method = RequestMethod.POST)
     public ResponseEntity<Object> findUserByEmail(@RequestBody User user) {
         return userService.findByEmail(user);

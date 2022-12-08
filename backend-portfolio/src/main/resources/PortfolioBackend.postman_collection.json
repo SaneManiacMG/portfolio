@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2275975d-61d0-4780-95f6-4c40b2ed6cdb",
+		"_postman_id": "308b6791-8f07-4edc-913e-6aa586acfbcc",
 		"name": "PortfolioBackend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11619615"
@@ -35,13 +35,69 @@
 			"response": []
 		},
 		{
+			"name": "addUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"username\": \"user23\",\r\n    \"email\": \"test@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/addUser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"addUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByUsername",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user23\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/findByUsername",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"findByUsername"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "findById",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\": 184743100812\r\n}",
+					"raw": "{\r\n    \"userId\": 625256220812\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -69,7 +125,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"testacc@email.com\"\r\n}",
+					"raw": "{\r\n    \"email\": \"test@email.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,41 +147,13 @@
 			"response": []
 		},
 		{
-			"name": "addUser",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"test@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/users/addUser",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"addUser"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "updateUser",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\": \"341930140812\",\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"test222222@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": true\r\n}",
+					"raw": "{\r\n    \"userId\": \"584357220812\",\r\n    \"username\": \"dummy2user\",\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"Acc\",\r\n    \"email\": \"update1@email.com\",\r\n    \"phoneNr\": \"0123456789\",\r\n    \"role\": \"test\",\r\n    \"active\": false\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -153,7 +181,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"userId\" : 2\r\n}",
+					"raw": "{\r\n    \"userId\" : 625256220812\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
