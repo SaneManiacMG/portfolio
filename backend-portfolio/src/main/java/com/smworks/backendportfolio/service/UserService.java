@@ -89,7 +89,7 @@ public class UserService {
         try {
             if ((userRepository.findByEmail(user.getEmail()).isEmpty())
                     && (!userRepository.existsById(user.getUserId()))) {
-                userRepository.save(new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                userRepository.save(new User(user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.CREATED);
             }

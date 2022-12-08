@@ -1,6 +1,9 @@
 package com.smworks.backendportfolio.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +27,16 @@ public class User {
     public User() {
     }
 
+    public User(String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
+        this.userId = generateId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNr = phoneNr;
+        this.role = role;
+        this.active = active;
+    }
+
     public User(String userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
         this.userId = userId;
         this.firstName = firstName;
@@ -36,10 +49,6 @@ public class User {
 
     public String getUserId() {
         return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -88,5 +97,24 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String generateId() {
+        return generateNumber() + generateDateTime();
+    }
+
+    private String generateDateTime() {
+        DateTimeFormatter userIdDateTimeFormat = DateTimeFormatter.ofPattern("ssmmHHddMM");
+        LocalDateTime now = LocalDateTime.now();
+        return userIdDateTimeFormat.format(now);
+    }
+
+    private int generateNumber() {
+        Random random = new Random();
+        int upperLimit = 99;
+        int lowerLimit = 10;
+        int sequence = random.nextInt(upperLimit - lowerLimit) + lowerLimit;
+
+        return sequence;
     }
 }
