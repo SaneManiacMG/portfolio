@@ -63,34 +63,6 @@
 			"response": []
 		},
 		{
-			"name": "findByUsername",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"user23\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/users/findByUsername",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"findByUsername"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "findById",
 			"request": {
 				"method": "POST",
@@ -113,6 +85,34 @@
 					"path": [
 						"users",
 						"findById"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByUsername",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user23\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/findByUsername",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"findByUsername"
 					]
 				}
 			},
