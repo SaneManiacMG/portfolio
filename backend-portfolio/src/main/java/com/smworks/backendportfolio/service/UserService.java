@@ -84,12 +84,11 @@ public class UserService {
     public ResponseEntity<Object> createUserRecord(User user) {
         try {
             if ((!userRepository.findByEmail(user.getEmail()).isPresent())
-                    && (!userRepository.existsById(user.getUserId()))) {
-                userRepository.save(new User(user.getFirstName(), user.getLastName(), user.getEmail(),
+                    /*&& (!userRepository.existsById(user.getUserId()))*/) {
+                userRepository.save(new User(user.generateId(), user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findByEmail(user.getEmail()), HttpStatus.CREATED);
             } else {
-                System.out.println("Something wrong with condition0");
                 return new ResponseEntity<>("User ID or email is already taken",
                         HttpStatus.CONFLICT);
             }

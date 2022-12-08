@@ -27,16 +27,6 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
-        this.userId = generateId();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNr = phoneNr;
-        this.role = role;
-        this.active = active;
-    }
-
     public User(String userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
         this.userId = userId;
         this.firstName = firstName;
