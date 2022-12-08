@@ -40,6 +40,19 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<Object> findByUsername(User user) {
+        Optional<User> userOptional = userRepository.findByUsername(user.getUsername());
+        try {
+            if (userRepository.findByUsername(user.getUsername()).isPresent())
+                return new ResponseEntity<>(userOptional.get(), HttpStatus.FOUND);
+            else
+                return new ResponseEntity<>("Username not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.toString(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public ResponseEntity<Object> findByEmail(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         try {
@@ -56,16 +69,16 @@ public class UserService {
     public ResponseEntity<Object> updateUserDetails(User user) {
         try {
             if (userRepository.findById(user.getUserId()).isPresent()) {
-                userRepository.save(new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getEmail(),
-                        user.getPhoneNr(), user.getRole(), user.isActive()));
+                userRepository.save(new User(user.getUserId(), user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getEmail(), user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
         } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Email already taken", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Username or email already taken", HttpStatus.CONFLICT);
         } catch (Exception e) {
-            return new ResponseEntity<>("Not allowed to change user ID", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.toString(), HttpStatus.CONFLICT);
         }
     }
 
@@ -84,13 +97,13 @@ public class UserService {
     public ResponseEntity<Object> createUserRecord(User user) {
         try {
             if ((!userRepository.findByEmail(user.getEmail()).isPresent())
-                    /*&& (!userRepository.existsById(user.getUserId()))*/) {
-                userRepository.save(new User(user.generateId(), user.getFirstName(), user.getLastName(), user.getEmail(),
+                    && (!userRepository.findByUsername(user.getUsername()).isPresent())) {
+                userRepository.save(new User(user.generateId(), user.getUsername(),
+                        user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findByEmail(user.getEmail()), HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>("User ID or email is already taken",
-                        HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Username or email is already taken", HttpStatus.CONFLICT);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);

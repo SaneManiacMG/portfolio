@@ -11,6 +11,8 @@ public class User {
     @Id
     @Column(name = "user_id")
     private String userId;
+    @Column(unique = true)
+    private String username;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -27,8 +29,9 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
+    public User(String userId, String username, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
         this.userId = userId;
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -39,6 +42,14 @@ public class User {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {
@@ -103,8 +114,6 @@ public class User {
         Random random = new Random();
         int upperLimit = 99;
         int lowerLimit = 10;
-        int sequence = random.nextInt(upperLimit - lowerLimit) + lowerLimit;
-
-        return sequence;
+        return random.nextInt(upperLimit - lowerLimit) + lowerLimit;
     }
 }
