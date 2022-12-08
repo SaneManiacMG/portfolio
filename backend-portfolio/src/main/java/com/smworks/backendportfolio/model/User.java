@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "user_id")
-    private long userId;
+    private String userId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -24,7 +24,7 @@ public class User {
     public User() {
     }
 
-    public User(long userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
+    public User(String userId, String firstName, String lastName, String email, String phoneNr, String role, boolean active) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,11 +34,11 @@ public class User {
         this.active = active;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
