@@ -1,9 +1,12 @@
 package com.smworks.backendportfolio.service;
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
+@Service
 public class SequenceGeneratorService {
     public String generateId() {
         return generateNumber() + generateDateTime();
