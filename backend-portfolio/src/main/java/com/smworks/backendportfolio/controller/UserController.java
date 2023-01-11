@@ -13,32 +13,32 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = ("/getAllUsers"), method = RequestMethod.POST)
+    @PostMapping("/getAllUsers")
     public ResponseEntity<Object> findAllUsers() {
         return userService.findAllUsers();
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.POST)
+    @PostMapping("/findById")
     public ResponseEntity<Object> findUserById(@RequestBody User user) {
         return userService.findByUserId(user);
     }
 
-    @RequestMapping(value = "/findByUsername", method = RequestMethod.POST)
+    @PostMapping("/findByUsername")
     public ResponseEntity<Object> findByUsername(@RequestBody User user) {
         return userService.findByUsername(user);
     }
 
-    @RequestMapping(value = "/findByEmail", method = RequestMethod.POST)
+    @PostMapping("/findByEmail")
     public ResponseEntity<Object> findUserByEmail(@RequestBody User user) {
         return userService.findByEmail(user);
     }
 
-    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    @PostMapping("/updateUser")
     public ResponseEntity<Object> updateUser(@RequestBody User user) {
         return userService.updateUserDetails(user);
     }
 
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    @PostMapping("/deleteUser")
     public ResponseEntity<Object> deleteUser(@RequestBody User user) {
         return userService.deleteUserRecord(user);
     }
