@@ -1,4 +1,4 @@
 package com.smworks.backendportfolio.repository;
 
-public class LoginRepository {
+public interface LoginRepository {
 }
