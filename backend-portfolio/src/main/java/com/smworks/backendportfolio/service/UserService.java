@@ -100,7 +100,7 @@ public class UserService {
         try {
             if ((!userRepository.findByEmail(user.getEmail()).isPresent())
                     && (!userRepository.findByUsername(user.getUsername()).isPresent())) {
-                userRepository.save(new User(sequenceGeneratorService.generateId(), user.getUsername(),
+                userRepository.save(new User(sequenceGeneratorService.generateUserId(), user.getUsername(),
                         user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
                 return new ResponseEntity<>(userRepository.findByEmail(user.getEmail()), HttpStatus.CREATED);
