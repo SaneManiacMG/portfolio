@@ -18,11 +18,8 @@ public class LoginService {
     private UserRepository userRepository;
     @Autowired
     private LoginRepository loginRepository;
-    @Autowired
-    private LoginRequest loginRequest;
+
     String userId;
-    String emailRegex = "^(.+)@(.+)$";
-    String usernamePattern = "^[a-zA-Z0-9]*$";
     Optional<User> user;
 
     public Boolean userExists(String userIdentifier) {
