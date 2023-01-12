@@ -11,9 +11,9 @@ public class Login {
     @Id
     @Column(name = "user_id")
     private String userId;
-    @Column
+    @Column(nullable = false)
     private String password;
-    @Column
+    @Column(nullable = false)
     private Boolean active;
 
     public Login() {

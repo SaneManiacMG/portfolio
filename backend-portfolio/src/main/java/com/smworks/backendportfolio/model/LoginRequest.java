@@ -1,5 +1,8 @@
 package com.smworks.backendportfolio.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class LoginRequest {
     private String userIdentifier;
     private String password;

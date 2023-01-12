@@ -1,6 +1,7 @@
 package com.smworks.backendportfolio.service;
 
 import com.smworks.backendportfolio.model.Login;
+import com.smworks.backendportfolio.model.LoginRequest;
 import com.smworks.backendportfolio.model.User;
 import com.smworks.backendportfolio.repository.LoginRepository;
 import com.smworks.backendportfolio.repository.UserRepository;
@@ -10,35 +11,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
 public class LoginService {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private LoginRepository loginRepository;
-    private String userId;
-    private static Pattern username = Pattern.compile("^[a-zA-Z0-9]*$");
+    @Autowired
+    private LoginRequest loginRequest;
+    String userId;
+    String emailRegex = "^(.+)@(.+)$";
+    String usernamePattern = "^[a-zA-Z0-9]*$";
+    Optional<User> user;
 
-    public ResponseEntity<Object> userExists(String userIdentifier) {
-        if (userIdentifier.isEmpty()) {
-            return new ResponseEntity<>("No username or email provided", HttpStatus.BAD_REQUEST);
+    public Boolean userExists(String userIdentifier) {
+        try {
+            if (userRepository.findByUsername(userIdentifier).isPresent()) {
+                user = userRepository.findByUsername(userIdentifier);
+            } else if (userRepository.findByEmail(userIdentifier).isPresent()) {
+                user = userRepository.findByEmail(userIdentifier);
+            } else {
+                return false;
+            }
+            userId = user.get().getUserId();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
         }
-        else if (username.matcher(userIdentifier).find()) {
-            Optional<User> optionalUser = userRepository.findByUsername(userIdentifier);
-            userId = optionalUser.get().getUserId();
+    }
+
+    public ResponseEntity<Object> authenticate(LoginRequest request) {
+
+        if (userExists(request.getUserIdentifier())) {
+            Optional<Login> authUser = loginRepository.findById(userId);
+            if (request.getPassword().equals(authUser.get().getPassword())) {
+                return new ResponseEntity<>(authUser.get(), HttpStatus.OK);
+            } else if (request.getPassword().equals(authUser.get().getPassword()) && !authUser.get().getActive()) {
+                return new ResponseEntity<>("Account blocked", HttpStatus.UNAUTHORIZED);
+            } else {
+                return new ResponseEntity<>("Incorrect username or password", HttpStatus.UNAUTHORIZED);
+            }
         } else {
-            Optional<User> optionalUser = userRepository.findByEmail(userIdentifier);
-            userId = optionalUser.get().getUserId();
+            return new ResponseEntity<>("Incorrect username or password", HttpStatus.UNAUTHORIZED);
         }
-        return null;
     }
-
-    public ResponseEntity<Object> authenticate (String userId) {
-        Optional<Login> user = loginRepository.findById(userId);
-        return null;
-    }
-
 }
+
