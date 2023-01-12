@@ -43,7 +43,7 @@ public class UserController {
         return userService.deleteUserRecord(user);
     }
 
-    @PostMapping(value = "/addUser")
+    @PostMapping("/addUser")
     public ResponseEntity<Object> createUser(@RequestBody User user) {
         return userService.createUserRecord(user);
     }
