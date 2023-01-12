@@ -228,6 +228,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "registerUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"added\",\r\n    \"lastName\": \"user\",\r\n    \"username\": \"newUser\",\r\n    \"email\": \"new@user.com\",\r\n    \"phoneNr\": \"1234567890\",\r\n    \"role\": \"test\",\r\n    \"active\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registerUser",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registerUser"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
