@@ -1,6 +1,7 @@
 package com.smworks.backendportfolio.service;
 
 import com.smworks.backendportfolio.model.Login;
+import com.smworks.backendportfolio.model.LoginRequest;
 import com.smworks.backendportfolio.model.User;
 import com.smworks.backendportfolio.repository.LoginRepository;
 import com.smworks.backendportfolio.repository.UserRepository;
@@ -41,11 +42,32 @@ public class RegisterService {
                 userService.createUserRecord(user);
                 Optional<User> newUser = userRepository.findByUsername(user.getUsername());
                 //need to prompt user for password
-                loginRepository.save(new Login(newUser.get().getUserId(), "sample password", true));
-                return new ResponseEntity<>("User details recorded", HttpStatus.CREATED);
+                loginRepository.save(new Login(newUser.get().getUserId(), "DEFAULT", false));
+                //userId = (newUser.get().getUserId());
+                return new ResponseEntity<>(newUser, HttpStatus.CREATED);
             } catch (Exception e) {
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    public ResponseEntity<Object> savePassword(LoginRequest request) {
+        Optional<Login> loginCred;
+        Optional<User> authUser;
+        try {
+            if (userRepository.findByUsername(request.getUserIdentifier()).isPresent()) {
+                authUser = userRepository.findByUsername(request.getUserIdentifier());
+            } else if (userRepository.findByEmail(request.getUserIdentifier()).isPresent()) {
+                authUser = userRepository.findByEmail(request.getUserIdentifier());
+            } else {
+                return new ResponseEntity<>("Invalid login credentials", HttpStatus.UNAUTHORIZED);
+            }
+            loginCred = loginRepository.findById(authUser.get().getUserId());
+            loginRepository.save(new Login(authUser.get().getUserId(), request.getPassword(), loginCred.get().getActive()));
+            return new ResponseEntity<>(loginCred.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

@@ -9,7 +9,7 @@ import java.util.Random;
 @Service
 public class SequenceGeneratorService {
     public String generateUserId() {
-        return generateNumber() + generateDateTime();
+        return generateDateTime() + generateNumber();
     }
 
     private String generateDateTime() {

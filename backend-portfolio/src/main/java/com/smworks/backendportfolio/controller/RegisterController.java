@@ -1,5 +1,6 @@
 package com.smworks.backendportfolio.controller;
 
+import com.smworks.backendportfolio.model.LoginRequest;
 import com.smworks.backendportfolio.model.User;
 import com.smworks.backendportfolio.service.RegisterService;
 import com.smworks.backendportfolio.service.UserService;
@@ -8,16 +9,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/register")
 public class RegisterController {
     @Autowired
     private RegisterService registerService;
     @Autowired
     private UserService userService;
 
-    @PostMapping("/registerUser")
+    @PostMapping("/newUser")
     public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
         if (user.getEmail().isEmpty()) {
             return new ResponseEntity<>("Missing email", HttpStatus.BAD_REQUEST);
@@ -25,6 +28,15 @@ public class RegisterController {
             return new ResponseEntity<>("Missing username", HttpStatus.BAD_REQUEST);
         } else {
             return registerService.createNewUser(user);
+        }
+    }
+
+    @PostMapping("/setPassword")
+    public ResponseEntity<Object> setPasswordForAccount(@RequestBody LoginRequest request) {
+        if (registerService.userDetailsExists(request.getUserIdentifier())) {
+            return registerService.savePassword(request);
+        } else {
+            return new ResponseEntity<>("Invalid user details", HttpStatus.UNAUTHORIZED);
         }
     }
 }
