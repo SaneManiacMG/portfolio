@@ -41,9 +41,7 @@ public class RegisterService {
             try {
                 userService.createUserRecord(user);
                 Optional<User> newUser = userRepository.findByUsername(user.getUsername());
-                //need to prompt user for password
                 loginRepository.save(new Login(newUser.get().getUserId(), "DEFAULT", false));
-                //userId = (newUser.get().getUserId());
                 return new ResponseEntity<>(newUser, HttpStatus.CREATED);
             } catch (Exception e) {
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
