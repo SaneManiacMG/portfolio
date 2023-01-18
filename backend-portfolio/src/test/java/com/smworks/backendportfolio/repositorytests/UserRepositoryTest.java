@@ -46,4 +46,10 @@ public class UserRepositoryTest {
         assertEquals(newUser.getUserId(), createdUser.getUserId());
     }
 
+    @Test
+    public void usernameAlreadyExists() {
+        newUser.setUsername("dummy2user");
+        Optional<User> existingUser = userRepository.findByUsername("dummy2user");
+        assertEquals(existingUser.get().getUsername(), "dummy55user");
+    }
 }
