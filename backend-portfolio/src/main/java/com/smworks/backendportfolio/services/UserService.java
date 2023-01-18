@@ -1,7 +1,7 @@
-package com.smworks.backendportfolio.service;
+package com.smworks.backendportfolio.services;
 
-import com.smworks.backendportfolio.model.User;
-import com.smworks.backendportfolio.repository.UserRepository;
+import com.smworks.backendportfolio.models.User;
+import com.smworks.backendportfolio.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

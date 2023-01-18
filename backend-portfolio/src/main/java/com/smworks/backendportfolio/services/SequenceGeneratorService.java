@@ -1,4 +1,4 @@
-package com.smworks.backendportfolio.service;
+package com.smworks.backendportfolio.services;
 
 import org.springframework.stereotype.Service;
 

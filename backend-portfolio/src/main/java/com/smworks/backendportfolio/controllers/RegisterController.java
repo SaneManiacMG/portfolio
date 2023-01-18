@@ -1,9 +1,9 @@
-package com.smworks.backendportfolio.controller;
+package com.smworks.backendportfolio.controllers;
 
-import com.smworks.backendportfolio.model.LoginRequest;
-import com.smworks.backendportfolio.model.User;
-import com.smworks.backendportfolio.service.RegisterService;
-import com.smworks.backendportfolio.service.UserService;
+import com.smworks.backendportfolio.models.LoginRequest;
+import com.smworks.backendportfolio.models.User;
+import com.smworks.backendportfolio.services.RegisterService;
+import com.smworks.backendportfolio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

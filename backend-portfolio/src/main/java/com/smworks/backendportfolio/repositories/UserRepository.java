@@ -1,6 +1,6 @@
-package com.smworks.backendportfolio.repository;
+package com.smworks.backendportfolio.repositories;
 
-import com.smworks.backendportfolio.model.User;
+import com.smworks.backendportfolio.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
