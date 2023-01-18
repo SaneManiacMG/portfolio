@@ -1,9 +1,6 @@
-package com.smworks.backendportfolio.model;
+package com.smworks.backendportfolio.models;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 @Entity
 @Table(name = "users")

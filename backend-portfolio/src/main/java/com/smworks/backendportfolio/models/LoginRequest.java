@@ -1,4 +1,4 @@
-package com.smworks.backendportfolio.model;
+package com.smworks.backendportfolio.models;
 
 import org.springframework.stereotype.Component;
 
