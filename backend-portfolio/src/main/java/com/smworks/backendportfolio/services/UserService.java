@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
 
-    public ResponseEntity<Object> findAllUsers() {
+    public ResponseEntity<Object> getAllUsers() {
         try {
             if (!userRepository.findAll().isEmpty())
                 return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);

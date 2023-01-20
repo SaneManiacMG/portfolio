@@ -15,7 +15,7 @@ public class UserController {
 
     @PostMapping("/getAllUsers")
     public ResponseEntity<Object> findAllUsers() {
-        return userService.findAllUsers();
+        return userService.getAllUsers();
     }
 
     @PostMapping("/findById")
