@@ -42,25 +42,19 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setupData() {
-        user1 = new User(sequenceGeneratorService.generateUserId(), "SaneManiacMG",
+        user1 = new User("11111", "SaneManiacMG",
                 "Mogomotsi", "Moroane",
                 "mmoroane@hotmail.com", "0813916607", "ADMIN",true);
-        user2 = new User(sequenceGeneratorService.generateUserId(), "dummy1admin",
+        user2 = new User("22222", "dummy1admin",
                 "dummy1", "admin",
                 "dummy1@email.com", "0123456789", "ADMIN",true);
-        user3 = new User(sequenceGeneratorService.generateUserId(), "TestAcc",
+        user3 = new User("33333", "TestAcc",
                 "Test", "Acc",
                 "test@email.com", "0123456789", "TEST",true);
         users.add(user1);
         users.add(user2);
         users.add(user3);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        user1 = null;
-        user2 = null;
-        user3 = null;
+        optionalUser = Optional.of(user1);
     }
 
     @Test
@@ -71,5 +65,28 @@ public class UserServiceTest {
         assertEquals(users, response.getBody());
     }
 
+    @Test
+    public void testFindUserByUserId() {
+        when(userRepository.findById(user1.getUserId())).thenReturn(optionalUser);
+        when(userRepository.existsById(user1.getUserId())).thenReturn(true);
+        ResponseEntity<Object> response = userServiceImpl.findByUserId(user1);
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertEquals(user1, response.getBody());
+    }
 
+    @Test
+    public void testFindUserByUsername() {
+        when(userRepository.findByUsername(user1.getUsername())).thenReturn(optionalUser);
+        ResponseEntity<Object> response = userServiceImpl.findByUsername(user1);
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertEquals(user1, response.getBody());
+    }
+
+    @Test
+    public void testFindUserByEmail() {
+        when(userRepository.findByEmail(user1.getEmail())).thenReturn(optionalUser);
+        ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
+        assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertEquals(user1, response.getBody());
+    }
 }
