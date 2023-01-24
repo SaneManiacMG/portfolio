@@ -80,7 +80,9 @@ public class UserServiceImpl implements UserService {
             if (userRepository.findById(user.getUserId()).isPresent()) {
                 userRepository.save(new User(user.getUserId(), user.getUsername(), user.getFirstName(),
                         user.getLastName(), user.getEmail(), user.getPhoneNr(), user.getRole(), user.isActive()));
-                return new ResponseEntity<>(userRepository.findById(user.getUserId()), HttpStatus.OK);
+                Optional<User> optionalUpdatedUser = userRepository.findById(user.getUserId());
+                User updatedUser = optionalUpdatedUser.get();
+                return new ResponseEntity<>(updatedUser, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
