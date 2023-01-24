@@ -5,25 +5,22 @@ import com.smworks.backendportfolio.repositories.UserRepository;
 import com.smworks.backendportfolio.services.SequenceGeneratorService;
 import com.smworks.backendportfolio.services.UserService;
 import com.smworks.backendportfolio.services.UserServiceImpl;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -87,6 +84,16 @@ public class UserServiceTest {
         when(userRepository.findByEmail(user1.getEmail())).thenReturn(optionalUser);
         ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
+        assertEquals(user1, response.getBody());
+    }
+
+    @Test
+    public void testUpdateUserDetails() {
+        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.ofNullable(user1));
+        user1.setUsername("MG");
+        when(userRepository.save(user1)).thenReturn(user1);
+        ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(user1, response.getBody());
     }
 }
