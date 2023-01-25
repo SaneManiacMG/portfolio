@@ -3,6 +3,7 @@ package com.smworks.backendportfolio.servicetests;
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.UserRepository;
 import com.smworks.backendportfolio.services.SequenceGeneratorService;
+import com.smworks.backendportfolio.services.SequenceGeneratorServiceImpl;
 import com.smworks.backendportfolio.services.UserService;
 import com.smworks.backendportfolio.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,18 +33,14 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Autowired
-    @MockBean
     private SequenceGeneratorService sequenceGeneratorService;
-    /*@MockBean
-    private SequenceGeneratorService sequenceGeneratorServiceMock;*/
+    @MockBean
+    private SequenceGeneratorServiceImpl sequenceGeneratorServiceImpl;
     User user1;
     User user2;
     User user3;
     List<User> users = new ArrayList<>();
     private Optional<User> optionalUser;
-
-    public UserServiceTest() {
-    }
 
     @BeforeEach
     public void setupData() {
@@ -118,12 +115,12 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUserRecord() {
-        String generatedUserId = sequenceGeneratorService.generateUserId();
-        when(sequenceGeneratorService.generateUserId()).thenReturn(generatedUserId);
+        String generatedUserId = sequenceGeneratorServiceImpl.generateUserId();
+        when(sequenceGeneratorServiceImpl.generateUserId()).thenReturn(generatedUserId);
         user3 = new User(generatedUserId, "TestAcc",
                 "Test", "Acc",
                 "test@email.com", "0123456789", "TEST",true);
-        System.out.println(user3.getUserId() + user3.getUsername() + user3.getEmail());
+        System.out.println(generatedUserId + user3.getUsername() + user3.getEmail());
         when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
         when(userRepository.save(user3)).thenReturn(user3);
