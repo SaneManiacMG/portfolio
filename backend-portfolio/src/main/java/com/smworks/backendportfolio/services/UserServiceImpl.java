@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Autowired
-    private SequenceGeneratorService sequenceGeneratorService;
+    private SequenceGeneratorServiceImpl sequenceGeneratorService;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
