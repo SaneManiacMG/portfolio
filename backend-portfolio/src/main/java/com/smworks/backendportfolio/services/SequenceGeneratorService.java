@@ -9,7 +9,8 @@ import java.util.Random;
 @Service
 public class SequenceGeneratorService {
     public String generateUserId() {
-        return generateDateTime() + generateNumber();
+        String generatedSequence = generateDateTime() + generateNumber();
+        return generatedSequence;
     }
 
     private String generateDateTime() {
@@ -23,5 +24,8 @@ public class SequenceGeneratorService {
         int upperLimit = 99;
         int lowerLimit = 10;
         return random.nextInt(upperLimit - lowerLimit) + lowerLimit;
+    }
+
+    public SequenceGeneratorService() {
     }
 }

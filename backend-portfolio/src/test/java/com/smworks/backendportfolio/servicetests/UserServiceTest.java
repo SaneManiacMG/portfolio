@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,12 +31,19 @@ public class UserServiceTest {
     private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
-    private SequenceGeneratorService sequenceGeneratorService = new SequenceGeneratorService();
+    @Autowired
+    @MockBean
+    private SequenceGeneratorService sequenceGeneratorService;
+    /*@MockBean
+    private SequenceGeneratorService sequenceGeneratorServiceMock;*/
     User user1;
     User user2;
     User user3;
     List<User> users = new ArrayList<>();
     private Optional<User> optionalUser;
+
+    public UserServiceTest() {
+    }
 
     @BeforeEach
     public void setupData() {
@@ -50,7 +58,7 @@ public class UserServiceTest {
                 "test@email.com", "0123456789", "TEST",true);
         users.add(user1);
         users.add(user2);
-        users.add(user3);
+        //users.add(user3);
         optionalUser = Optional.of(user1);
     }
 
@@ -95,5 +103,33 @@ public class UserServiceTest {
         ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(user1, response.getBody());
+    }
+
+    @Test
+    public void testDeleteUserRecord() {
+        when(userRepository.existsById(user1.getUserId())).thenReturn(true);
+        doNothing().when(userRepository).deleteById(user1.getUserId());
+        ResponseEntity<Object> response = userServiceImpl.deleteUserRecord(user1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User deleted", response.getBody());
+        verify(userRepository, times(1)).existsById(user1.getUserId());
+        verify(userRepository, times(1)).deleteById(user1.getUserId());
+    }
+
+    @Test
+    public void testCreateUserRecord() {
+        String generatedUserId = sequenceGeneratorService.generateUserId();
+        when(sequenceGeneratorService.generateUserId()).thenReturn(generatedUserId);
+        user3 = new User(generatedUserId, "TestAcc",
+                "Test", "Acc",
+                "test@email.com", "0123456789", "TEST",true);
+        System.out.println(user3.getUserId() + user3.getUsername() + user3.getEmail());
+        when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.save(user3)).thenReturn(user3);
+        ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
+        System.out.println(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(user3, response.getBody());
     }
 }
