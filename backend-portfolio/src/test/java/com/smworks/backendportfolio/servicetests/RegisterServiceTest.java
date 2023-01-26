@@ -32,10 +32,6 @@ public class RegisterServiceTest {
 
     @Test
     public void registerNewUserTest() {
-        when(registerService.userDetailsExists(newUser.getUsername())).thenReturn(false);
-        when(registerService.userDetailsExists(newUser.getEmail())).thenReturn(false);
-        /*when(userRepository.findByEmail(newUser.getEmail()).isEmpty()).thenReturn(true);
-        when(userRepository.findByUsername(newUser.getUsername()).isEmpty()).thenReturn(true);*/
-        ResponseEntity<Object> response = new ResponseEntity<>("", HttpStatus.OK);
+
     }
 }

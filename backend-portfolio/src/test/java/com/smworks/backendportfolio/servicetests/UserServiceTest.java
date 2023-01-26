@@ -110,7 +110,6 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUserRecord() {
-        String generatedValue = "GeneratedValue";
         user3 = new User("GENERATED_ID", "TestAcc",
                 "Test", "Acc",
                 "test@email.com", "0123456789", "TEST",true);
