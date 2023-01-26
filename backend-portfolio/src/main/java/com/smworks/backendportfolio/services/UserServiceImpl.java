@@ -8,13 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    @Autowired
-    private SequenceGeneratorServiceImpl sequenceGeneratorService;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -111,15 +112,36 @@ public class UserServiceImpl implements UserService {
         try {
             if ((userRepository.findByEmail(user.getEmail()).isEmpty())
                     && (userRepository.findByUsername(user.getUsername()).isEmpty())) {
-                userRepository.save(new User(sequenceGeneratorService.generateUserId(), user.getUsername(),
+                userRepository.save(new User(generateUserId(), user.getUsername(),
                         user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
-                return new ResponseEntity<>(userRepository.findByEmail(user.getEmail()), HttpStatus.CREATED);
+                return new ResponseEntity<>(user, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Username or email is already taken", HttpStatus.CONFLICT);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public String generateUserId() {
+        String generatedSequence = generateDateTime() + generateNumber();
+        return generatedSequence;
+    }
+
+    @Override
+    public String generateDateTime() {
+        DateTimeFormatter userIdDateTimeFormat = DateTimeFormatter.ofPattern("ssmmHHddMM");
+        LocalDateTime now = LocalDateTime.now();
+        return userIdDateTimeFormat.format(now);
+    }
+
+    @Override
+    public int generateNumber() {
+        Random random = new Random();
+        int upperLimit = 99;
+        int lowerLimit = 10;
+        return random.nextInt(upperLimit - lowerLimit) + lowerLimit;
     }
 }
