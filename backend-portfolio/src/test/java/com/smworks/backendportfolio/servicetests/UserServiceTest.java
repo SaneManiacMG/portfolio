@@ -2,8 +2,6 @@ package com.smworks.backendportfolio.servicetests;
 
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.UserRepository;
-import com.smworks.backendportfolio.services.SequenceGeneratorService;
-import com.smworks.backendportfolio.services.SequenceGeneratorServiceImpl;
 import com.smworks.backendportfolio.services.UserService;
 import com.smworks.backendportfolio.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,10 +29,6 @@ public class UserServiceTest {
     private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
-    @Autowired
-    private SequenceGeneratorService sequenceGeneratorService;
-    @MockBean
-    private SequenceGeneratorServiceImpl sequenceGeneratorServiceImpl;
     User user1;
     User user2;
     User user3;
@@ -98,6 +91,8 @@ public class UserServiceTest {
         user1.setUsername("MG");
         when(userRepository.save(user1)).thenReturn(user1);
         ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
+        System.out.println(user1);
+        System.out.println(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(user1, response.getBody());
     }
@@ -115,17 +110,15 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUserRecord() {
-        String generatedUserId = sequenceGeneratorServiceImpl.generateUserId();
-        when(sequenceGeneratorServiceImpl.generateUserId()).thenReturn(generatedUserId);
-        user3 = new User(generatedUserId, "TestAcc",
+        String generatedValue = "GeneratedValue";
+        user3 = new User("GENERATED_ID", "TestAcc",
                 "Test", "Acc",
                 "test@email.com", "0123456789", "TEST",true);
-        System.out.println(generatedUserId + user3.getUsername() + user3.getEmail());
         when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
         when(userRepository.save(user3)).thenReturn(user3);
         ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
-        System.out.println(response);
+        System.out.println(user3.toString() + response.getBody().toString());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user3, response.getBody());
     }
