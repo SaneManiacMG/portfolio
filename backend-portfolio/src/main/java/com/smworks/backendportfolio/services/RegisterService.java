@@ -1,7 +1,7 @@
 package com.smworks.backendportfolio.services;
 
 import com.smworks.backendportfolio.models.Login;
-import com.smworks.backendportfolio.models.LoginRequest;
+import com.smworks.backendportfolio.models.RegisterRequest;
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.LoginRepository;
 import com.smworks.backendportfolio.repositories.UserRepository;
@@ -32,40 +32,24 @@ public class RegisterService {
         }
     }
 
-    public ResponseEntity<Object> createNewUser(@RequestBody User user) {
-        if (userDetailsExists(user.getEmail())) {
-            return new ResponseEntity<>("Use unique email/username", HttpStatus.CONFLICT);
-        } else if (userDetailsExists(user.getUsername()))
-            return new ResponseEntity<>("Use unique email/username", HttpStatus.CONFLICT);
-        else {
+    public ResponseEntity<Object> createNewUserLogin(@RequestBody RegisterRequest registerRequest) {
+        if (userDetailsExists(registerRequest.getEmail()) && userDetailsExists(registerRequest.getUsername()) &&
+                !registerRequest.getPassword().isEmpty()) {
             try {
-                userService.createUserRecord(user);
-                Optional<User> newUser = userRepository.findByUsername(user.getUsername());
-                loginRepository.save(new Login(newUser.get().getUserId(), "DEFAULT", false));
-                return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+                Optional<User> newUser = userRepository.findByUsername(registerRequest.getUsername());
+                loginRepository.save(new Login(newUser.get().getUserId(), registerRequest.getPassword(), true));
+                return new ResponseEntity<>(loginRepository.findById(newUser.get().getUserId()), HttpStatus.CREATED);
             } catch (Exception e) {
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        } else if (registerRequest.getEmail().isEmpty())
+            return new ResponseEntity<>("Please email address", HttpStatus.BAD_REQUEST);
+        else if (registerRequest.getUsername().isEmpty())
+            return new ResponseEntity<>("Please provide username", HttpStatus.BAD_REQUEST);
+        else if (registerRequest.getPassword().isEmpty())
+            return new ResponseEntity<>("Please provide password", HttpStatus.BAD_REQUEST);
+        else {
+            return new ResponseEntity<>("Invalid User Details", HttpStatus.CONFLICT);
         }
-    }
-
-    public ResponseEntity<Object> savePassword(LoginRequest request) {
-        Optional<Login> loginCred;
-        Optional<User> authUser;
-        try {
-            if (userRepository.findByUsername(request.getUserIdentifier()).isPresent()) {
-                authUser = userRepository.findByUsername(request.getUserIdentifier());
-            } else if (userRepository.findByEmail(request.getUserIdentifier()).isPresent()) {
-                authUser = userRepository.findByEmail(request.getUserIdentifier());
-            } else {
-                return new ResponseEntity<>("Invalid login credentials", HttpStatus.UNAUTHORIZED);
-            }
-            loginCred = loginRepository.findById(authUser.get().getUserId());
-            loginRepository.save(new Login(authUser.get().getUserId(), request.getPassword(), loginCred.get().getActive()));
-            return new ResponseEntity<>(loginCred.get(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
     }
 }

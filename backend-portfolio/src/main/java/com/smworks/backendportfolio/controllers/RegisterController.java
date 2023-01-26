@@ -1,7 +1,7 @@
 package com.smworks.backendportfolio.controllers;
 
 import com.smworks.backendportfolio.models.LoginRequest;
-import com.smworks.backendportfolio.models.User;
+import com.smworks.backendportfolio.models.RegisterRequest;
 import com.smworks.backendportfolio.services.RegisterService;
 import com.smworks.backendportfolio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +21,13 @@ public class RegisterController {
     private UserService userService;
 
     @PostMapping("/newUser")
-    public ResponseEntity<Object> registerNewUser(@RequestBody User user) {
-        if (user.getEmail().isEmpty()) {
+    public ResponseEntity<Object> registerNewUser(@RequestBody RegisterRequest registerRequest) {
+        if (registerRequest.getEmail().isEmpty()) {
             return new ResponseEntity<>("Missing email", HttpStatus.BAD_REQUEST);
-        } else if (user.getUsername().isEmpty()) {
+        } else if (registerRequest.getUsername().isEmpty()) {
             return new ResponseEntity<>("Missing username", HttpStatus.BAD_REQUEST);
         } else {
-            return registerService.createNewUser(user);
-        }
-    }
-
-    @PostMapping("/setPassword")
-    public ResponseEntity<Object> setPasswordForAccount(@RequestBody LoginRequest request) {
-        if (registerService.userDetailsExists(request.getUserIdentifier())) {
-            return registerService.savePassword(request);
-        } else {
-            return new ResponseEntity<>("Invalid user details", HttpStatus.UNAUTHORIZED);
+            return registerService.createNewUserLogin(registerRequest);
         }
     }
 }
