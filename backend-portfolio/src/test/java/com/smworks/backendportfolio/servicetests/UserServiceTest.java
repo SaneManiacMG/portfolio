@@ -117,7 +117,6 @@ public class UserServiceTest {
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
         when(userRepository.save(user3)).thenReturn(user3);
         ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
-        System.out.println(user3.toString() + response.getBody().toString());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user3, response.getBody());
     }
