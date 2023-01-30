@@ -43,12 +43,8 @@ public class UserServiceTest {
         user2 = new User("22222", "dummy1admin",
                 "dummy1", "admin",
                 "dummy1@email.com", "0123456789", "ADMIN",true);
-        user3 = new User("33333", "TestAcc",
-                "Test", "Acc",
-                "test@email.com", "0123456789", "TEST",true);
         users.add(user1);
         users.add(user2);
-        //users.add(user3);
         optionalUser = Optional.of(user1);
     }
 
@@ -66,7 +62,7 @@ public class UserServiceTest {
         when(userRepository.existsById(user1.getUserId())).thenReturn(true);
         ResponseEntity<Object> response = userServiceImpl.findByUserId(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(user1, response.getBody());
+        assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
@@ -74,7 +70,7 @@ public class UserServiceTest {
         when(userRepository.findByUsername(user1.getUsername())).thenReturn(optionalUser);
         ResponseEntity<Object> response = userServiceImpl.findByUsername(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(user1, response.getBody());
+        assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
@@ -82,7 +78,7 @@ public class UserServiceTest {
         when(userRepository.findByEmail(user1.getEmail())).thenReturn(optionalUser);
         ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
-        assertEquals(user1, response.getBody());
+        assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
@@ -91,10 +87,8 @@ public class UserServiceTest {
         user1.setUsername("MG");
         when(userRepository.save(user1)).thenReturn(user1);
         ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
-        System.out.println(user1);
-        System.out.println(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(user1, response.getBody());
+        assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
@@ -110,14 +104,18 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUserRecord() {
-        user3 = new User("GENERATED_ID", "TestAcc",
+        user3 = new User("GENERATED_ID", "TestAcc1",
                 "Test", "Acc",
-                "test@email.com", "0123456789", "TEST",true);
+                "test1@email.com", "0123456789", "TEST",true);
         when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
-        when(userRepository.save(user3)).thenReturn(user3);
+        when(userRepository.save(any(User.class))).thenReturn(user3);
+        Optional<User> savedUser = Optional.of(user3);
+        when(userRepository.findByUsername(user3.getUsername())).thenReturn(savedUser);
+        
         ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
+        System.out.println(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(user3, response.getBody());
+        assertEquals(user3.toString(), response.getBody().toString());
     }
 }

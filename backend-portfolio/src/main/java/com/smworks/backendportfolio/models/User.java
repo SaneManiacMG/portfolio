@@ -100,6 +100,15 @@ public class User {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNr='" + phoneNr + '\'' +
+                ", role='" + role + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

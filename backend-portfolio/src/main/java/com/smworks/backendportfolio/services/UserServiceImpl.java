@@ -16,6 +16,7 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private User foundUser;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -37,9 +38,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> findByUserId(User user) {
         Optional<User> userOptional = userRepository.findById(user.getUserId());
         try {
-            if (userRepository.existsById(user.getUserId()))
-                return new ResponseEntity<>(userOptional.get(), HttpStatus.FOUND);
-            else
+            if (userRepository.existsById(user.getUserId())) {
+                foundUser = userOptional.get();
+                return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
+            } else
                 return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(),
@@ -50,10 +52,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> findByUsername(User user) {
         Optional<User> userOptional = userRepository.findByUsername(user.getUsername());
+
         try {
-            if (userRepository.findByUsername(user.getUsername()).isPresent())
-                return new ResponseEntity<>(userOptional.get(), HttpStatus.FOUND);
-            else
+            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                foundUser = userOptional.get();
+                return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
+            } else
                 return new ResponseEntity<>("Username not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(),
@@ -65,9 +69,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> findByEmail(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         try {
-            if (userRepository.findByEmail(user.getEmail()).isPresent())
-                return new ResponseEntity<>(userOptional.get(), HttpStatus.FOUND);
-            else
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                foundUser = userOptional.get();
+                return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
+            } else
                 return new ResponseEntity<>("Email not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(),
@@ -115,7 +120,9 @@ public class UserServiceImpl implements UserService {
                 userRepository.save(new User(generateUserId(), user.getUsername(),
                         user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getPhoneNr(), user.getRole(), user.isActive()));
-                return new ResponseEntity<>(user, HttpStatus.CREATED);
+                Optional<User> savedUser = userRepository.findByUsername(user.getUsername());
+                User userDetails = savedUser.get();
+                return new ResponseEntity<>(userDetails, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>("Username or email is already taken", HttpStatus.CONFLICT);
             }

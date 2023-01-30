@@ -44,4 +44,13 @@ public class Login {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    @Override
+    public String toString() {
+        return "Login{" +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

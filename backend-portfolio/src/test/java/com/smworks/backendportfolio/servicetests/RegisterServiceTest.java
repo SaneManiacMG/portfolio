@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class RegisterServiceImplTest {
+public class RegisterServiceTest {
     User newUser;
     RegisterRequest newRegisterRequest;
     private Login login;
@@ -28,7 +28,6 @@ public class RegisterServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private LoginRepository loginRepository;
-
     @InjectMocks
     private RegisterServiceImpl registerService;
 
