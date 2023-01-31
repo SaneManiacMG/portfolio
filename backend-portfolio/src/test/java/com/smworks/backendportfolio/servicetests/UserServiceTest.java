@@ -109,12 +109,8 @@ public class UserServiceTest {
                 "test1@email.com", "0123456789", "TEST",true);
         when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenReturn(user3);
-        Optional<User> savedUser = Optional.of(user3);
-        when(userRepository.findByUsername(user3.getUsername())).thenReturn(savedUser);
-        
+        when(userRepository.save(user3)).thenReturn(user3);
         ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
-        System.out.println(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user3.toString(), response.getBody().toString());
     }

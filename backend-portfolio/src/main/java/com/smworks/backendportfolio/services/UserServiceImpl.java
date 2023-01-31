@@ -2,7 +2,6 @@ package com.smworks.backendportfolio.services;
 
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> findByUserId(User user) {
         Optional<User> userOptional = userRepository.findById(user.getUserId());
+
         try {
             if (userRepository.existsById(user.getUserId())) {
                 foundUser = userOptional.get();
@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Object> findByEmail(User user) {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
+
         try {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
                 foundUser = userOptional.get();
@@ -114,20 +115,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> createUserRecord(User user) {
-        try {
-            if ((userRepository.findByEmail(user.getEmail()).isEmpty())
-                    && (userRepository.findByUsername(user.getUsername()).isEmpty())) {
-                userRepository.save(new User(generateUserId(), user.getUsername(),
-                        user.getFirstName(), user.getLastName(), user.getEmail(),
-                        user.getPhoneNr(), user.getRole(), user.isActive()));
-                Optional<User> savedUser = userRepository.findByUsername(user.getUsername());
-                User userDetails = savedUser.get();
-                return new ResponseEntity<>(userDetails, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>("Username or email is already taken", HttpStatus.CONFLICT);
+        Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+        Optional<User> existingUserByUsername = userRepository.findByUsername(user.getUsername());
+
+        if (existingUserByEmail.isPresent() || existingUserByUsername.isPresent()) {
+            return new ResponseEntity<>("Username or email already exists", HttpStatus.CONFLICT);
+        } else {
+            try {
+                user.setUserId(generateUserId());
+                User savedUser = userRepository.save(user);
+                return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>("An error has occurred while saving the user \n" + e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
