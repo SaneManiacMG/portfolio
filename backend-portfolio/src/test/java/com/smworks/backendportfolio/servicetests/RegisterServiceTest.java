@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class RegisterServiceTest {
     User newUser;
-    RegisterRequest newRegisterRequest;
     private Login login;
     @Mock
     private UserRepository userRepository;
@@ -40,19 +39,15 @@ public class RegisterServiceTest {
 
     @Test
     public void registerNewUserTest() {
-        newRegisterRequest = new RegisterRequest(newUser.getUserId(), newUser.getUsername(), newUser.getEmail(),
+        RegisterRequest newRegisterRequest = new RegisterRequest(newUser.getUsername(), newUser.getEmail(),
                 "123456789");
         when(userRepository.findByUsername(newRegisterRequest.getUsername())).thenReturn(Optional.of(newUser));
         when(userRepository.findByEmail(newRegisterRequest.getEmail())).thenReturn(Optional.of(newUser));
-        when(loginRepository.save(new Login(newRegisterRequest.getUserId(), newRegisterRequest.getPassword(),
-                true))).thenReturn(new Login(newRegisterRequest.getUserId(), newRegisterRequest.getPassword(),
-                true));
-        login = new Login(newUser.getUserId(), newRegisterRequest.getPassword(), true);
-        when(loginRepository.save(login)).
-                thenReturn(login);
-        when(loginRepository.findById(newUser.getUserId())).thenReturn(Optional.of(login));
+        Login savedLogin = new Login(newUser.getUserId(), newRegisterRequest.getPassword(),
+                true);
+        when(loginRepository.save(savedLogin)).thenReturn(savedLogin);
         ResponseEntity<Object> response = registerService.createNewUserLogin(newRegisterRequest);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(login, response.getBody());
+        assertEquals(savedLogin.toString(), response.getBody().toString());
     }
 }
