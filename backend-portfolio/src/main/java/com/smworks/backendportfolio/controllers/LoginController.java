@@ -16,12 +16,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
-        if (loginRequest.getUserIdentifier().isEmpty()) {
-            return new ResponseEntity<>("No username or password provided", HttpStatus.BAD_REQUEST);
-        } else if (loginRequest.getPassword().isEmpty()) {
-            return new ResponseEntity<>("No username or password provided", HttpStatus.BAD_REQUEST);
-        } else {
-            return loginServiceImpl.authenticate(loginRequest);
-        }
+        return loginServiceImpl.authenticate(loginRequest);
     }
 }
