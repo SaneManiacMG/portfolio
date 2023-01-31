@@ -37,7 +37,7 @@ public class RegisterServiceTest {
     }
 
     @Test
-    public void registerNewUserTest_201() {
+    public void registerNewUserTest_CREATED() {
         RegisterRequest request = new RegisterRequest(user.getUsername(), user.getEmail(),
                 "123456789");
         Login savedLogin = new Login(user.getUserId(), request.getPassword(),
@@ -54,7 +54,7 @@ public class RegisterServiceTest {
     }
 
     @Test
-    public void registerNewUserTest_401() {
+    public void registerNewUserTest_UNAUTHORIZED() {
         RegisterRequest request1 = new RegisterRequest(user.getUsername(), "RandomEmail", "123456");
         RegisterRequest request2 = new RegisterRequest("RandomUsername", user.getEmail(), "123456");
 
@@ -71,7 +71,7 @@ public class RegisterServiceTest {
      }
 
     @Test
-    public void registerNewUserTest_406() {
+    public void registerNewUserTest_NOT_ACCEPTABLE() {
         RegisterRequest request1 = new RegisterRequest(user.getUsername(), "", "123456");
         RegisterRequest request2 = new RegisterRequest("", user.getEmail(), "123456");
         RegisterRequest request3 = new RegisterRequest(user.getUsername(), user.getEmail(), "");

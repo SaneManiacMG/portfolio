@@ -2,13 +2,11 @@ package com.smworks.backendportfolio.servicetests;
 
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.UserRepository;
-import com.smworks.backendportfolio.services.UserService;
 import com.smworks.backendportfolio.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +21,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class UserServiceTest {
-    @Autowired
-    private UserService userService;
     @InjectMocks
     private UserServiceImpl userServiceImpl;
     @Mock
@@ -36,7 +32,7 @@ public class UserServiceTest {
     private Optional<User> optionalUser;
 
     @BeforeEach
-    public void setupData() {
+    public void setup() {
         user1 = new User("11111", "SaneManiacMG",
                 "Mogomotsi", "Moroane",
                 "mmoroane@hotmail.com", "0813916607", "ADMIN",true);
@@ -49,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testFindAllUsers() {
+    public void testFindAllUsers_OK() {
         when(userRepository.findAll()).thenReturn(users);
         ResponseEntity<Object> response = userServiceImpl.getAllUsers();
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -57,7 +53,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testFindUserByUserId() {
+    public void testFindUserByUserId_FOUND() {
         when(userRepository.findById(user1.getUserId())).thenReturn(optionalUser);
         when(userRepository.existsById(user1.getUserId())).thenReturn(true);
         ResponseEntity<Object> response = userServiceImpl.findByUserId(user1);
@@ -66,7 +62,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testFindUserByUsername() {
+    public void testFindUserByUsername_FOUND() {
         when(userRepository.findByUsername(user1.getUsername())).thenReturn(optionalUser);
         ResponseEntity<Object> response = userServiceImpl.findByUsername(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
@@ -74,7 +70,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testFindUserByEmail() {
+    public void testFindUserByEmail_FOUND() {
         when(userRepository.findByEmail(user1.getEmail())).thenReturn(optionalUser);
         ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
@@ -82,7 +78,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUpdateUserDetails() {
+    public void testUpdateUserDetails_OK() {
         when(userRepository.findById(user1.getUserId())).thenReturn(Optional.ofNullable(user1));
         user1.setUsername("MG");
         when(userRepository.save(user1)).thenReturn(user1);
@@ -92,7 +88,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testDeleteUserRecord() {
+    public void testDeleteUserRecord_OK() {
         when(userRepository.existsById(user1.getUserId())).thenReturn(true);
         doNothing().when(userRepository).deleteById(user1.getUserId());
         ResponseEntity<Object> response = userServiceImpl.deleteUserRecord(user1);
@@ -103,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUserRecord() {
+    public void testCreateUserRecord_CREATED() {
         user3 = new User("GENERATED_ID", "TestAcc1",
                 "Test", "Acc",
                 "test1@email.com", "0123456789", "TEST",true);

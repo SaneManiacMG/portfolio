@@ -43,7 +43,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest_200() {
+    public void authenticateTest_OK() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
@@ -59,7 +59,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest_406() {
+    public void authenticateTest_NOT_ACCEPTABLE() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
@@ -83,7 +83,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest_401() {
+    public void authenticateTest_UNAUTHORIZED() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
@@ -103,7 +103,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest_403() {
+    public void authenticateTest_FORBIDDEN() {
         login2 = new Login("GeneratedSequence", "123456789", false);
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
