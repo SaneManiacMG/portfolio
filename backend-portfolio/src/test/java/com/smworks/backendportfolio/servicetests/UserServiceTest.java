@@ -29,7 +29,7 @@ public class UserServiceTest {
     User user2;
     User user3;
     List<User> users = new ArrayList<>();
-    private Optional<User> optionalUser;
+
 
     @BeforeEach
     public void setup() {
@@ -41,20 +41,33 @@ public class UserServiceTest {
                 "dummy1@email.com", "0123456789", "ADMIN",true);
         users.add(user1);
         users.add(user2);
-        optionalUser = Optional.of(user1);
     }
 
     @Test
     public void testFindAllUsers_OK() {
         when(userRepository.findAll()).thenReturn(users);
+
         ResponseEntity<Object> response = userServiceImpl.getAllUsers();
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(users, response.getBody());
     }
 
     @Test
+    public void testFindAllUsers_NOT_FOUND() {
+        List<User> emptyList = new ArrayList<>();
+
+        when(userRepository.findAll()).thenReturn(emptyList);
+
+        ResponseEntity<Object> response = userServiceImpl.getAllUsers();
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("No users found", response.getBody());
+    }
+
+    @Test
     public void testFindUserByUserId_FOUND() {
-        when(userRepository.findById(user1.getUserId())).thenReturn(optionalUser);
+        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.of(user1));
         when(userRepository.existsById(user1.getUserId())).thenReturn(true);
         ResponseEntity<Object> response = userServiceImpl.findByUserId(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
@@ -62,29 +75,79 @@ public class UserServiceTest {
     }
 
     @Test
+    public void testFindUserById_NOT_FOUND() {
+        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = userServiceImpl.findByUserId(user1);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User ID not found", response.getBody());
+    }
+
+    @Test
     public void testFindUserByUsername_FOUND() {
-        when(userRepository.findByUsername(user1.getUsername())).thenReturn(optionalUser);
+        when(userRepository.findByUsername(user1.getUsername())).thenReturn(Optional.of(user1));
+
         ResponseEntity<Object> response = userServiceImpl.findByUsername(user1);
+
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
+    public void testFindUserByUsername_NOT_FOUND() {
+        when(userRepository.findByUsername(user1.getUsername())).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = userServiceImpl.findByUsername(user1);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Username not found", response.getBody());
+    }
+
+    @Test
     public void testFindUserByEmail_FOUND() {
-        when(userRepository.findByEmail(user1.getEmail())).thenReturn(optionalUser);
+        when(userRepository.findByEmail(user1.getEmail())).thenReturn(Optional.of(user1));
         ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertEquals(user1.toString(), response.getBody().toString());
     }
 
     @Test
+    public void testFindUserByEmail_NOT_FOUND() {
+        when(userRepository.findByEmail(user1.getEmail())).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = userServiceImpl.findByEmail(user1);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Email not found", response.getBody());
+    }
+
+    @Test
     public void testUpdateUserDetails_OK() {
-        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.ofNullable(user1));
         user1.setUsername("MG");
+
+        when(userRepository.findById(user1.getUserId())).thenReturn(Optional.ofNullable(user1));
         when(userRepository.save(user1)).thenReturn(user1);
+
         ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(user1.toString(), response.getBody().toString());
+    }
+
+    @Test
+    public void testUpdateUserDetails_NOT_FOUND() {
+        when(userRepository.findById("RandomId")).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = userServiceImpl.updateUserDetails(user1);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User not found", response.getBody());
+    }
+
+    @Test
+    public void testUpdateUserDetails_CONFLICT() {
+
     }
 
     @Test

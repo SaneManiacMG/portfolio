@@ -85,16 +85,17 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<Object> updateUserDetails(User user) {
         try {
             if (userRepository.findById(user.getUserId()).isPresent()) {
-                userRepository.save(new User(user.getUserId(), user.getUsername(), user.getFirstName(),
-                        user.getLastName(), user.getEmail(), user.getPhoneNr(), user.getRole(), user.isActive()));
+                userRepository.save(user);
                 Optional<User> optionalUpdatedUser = userRepository.findById(user.getUserId());
+
                 User updatedUser = optionalUpdatedUser.get();
+
                 return new ResponseEntity<>(updatedUser, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
         } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Username or email already taken", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Username/email already taken", HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.CONFLICT);
         }
