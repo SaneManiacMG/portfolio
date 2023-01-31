@@ -21,41 +21,29 @@ public class RegisterServiceImpl implements RegisterService {
     private UserRepository userRepository;
     @Autowired
     private LoginRepository loginRepository;
-    private User user;
-
-    @Override
-    public Boolean userDetailsExists(String userIdentifier) {
-        if (userRepository.findByUsername(userIdentifier).isPresent()) {
-            return true;
-        } else if (userRepository.findByEmail(userIdentifier).isPresent()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     @Override
     public ResponseEntity<Object> createNewUserLogin(@RequestBody RegisterRequest registerRequest) {
-        if (userDetailsExists(registerRequest.getEmail()) && userDetailsExists(registerRequest.getUsername()) &&
-                !registerRequest.getPassword().isEmpty()) {
+        if (registerRequest.getUsername().isBlank() || registerRequest.getEmail().isBlank() ||
+                registerRequest.getPassword().isBlank()) {
+            return new ResponseEntity<>("Not all values provided", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> existingUserByEmail = userRepository.findByEmail(registerRequest.getEmail());
+        Optional<User> existingUserByUsername = userRepository.findByUsername(registerRequest.getUsername());
+
+        if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() &&
+                existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
+            Login savedUser = new Login(existingUserByUsername.get().getUserId(), registerRequest.getPassword(),
+                    true);
             try {
-                Optional<User> newUser = userRepository.findByUsername(registerRequest.getUsername());
-                loginRepository.save(new Login(newUser.get().getUserId(), registerRequest.getPassword(),
-                        true));
-                Optional<Login> storedCreds = loginRepository.findById(newUser.get().getUserId());
-                Login loginDetails = storedCreds.get();
-                return new ResponseEntity<>(loginDetails, HttpStatus.CREATED);
+                loginRepository.save(savedUser);
+                return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
             } catch (Exception e) {
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else if (registerRequest.getEmail().isEmpty())
-            return new ResponseEntity<>("Please email address", HttpStatus.BAD_REQUEST);
-        else if (registerRequest.getUsername().isEmpty())
-            return new ResponseEntity<>("Please provide username", HttpStatus.BAD_REQUEST);
-        else if (registerRequest.getPassword().isEmpty())
-            return new ResponseEntity<>("Please provide password", HttpStatus.BAD_REQUEST);
-        else {
-            return new ResponseEntity<>("Invalid User Details", HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>("Invalid user credentials", HttpStatus.UNAUTHORIZED);
         }
     }
 }
