@@ -9,4 +9,4 @@ values
 insert into logins
 (user_id, password, active)
 values
-('123', 'p@ssw0rd1', true);
+('123456789', 'p@ssw0rd1', true);
