@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public ResponseEntity<Object> authenticate(LoginRequest request) {
         if (request.getPassword().isBlank() || request.getUserIdentifier().isBlank()) {
-            return new ResponseEntity<>("Missing value/s", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Missing value/s", HttpStatus.NOT_ACCEPTABLE);
         }
 
         Optional<User> existingUserByEmail = userRepository.findByEmail(request.getUserIdentifier());
@@ -34,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
         } else if (existingUserByUsername.isPresent()) {
             userId = existingUserByUsername.get().getUserId();
         } else {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid username/password", HttpStatus.UNAUTHORIZED);
         }
 
         Optional<Login> loginUser = loginRepository.findById(userId);
@@ -46,7 +46,7 @@ public class LoginServiceImpl implements LoginService {
             }
             return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid username/password", HttpStatus.UNAUTHORIZED);
         }
     }
 }

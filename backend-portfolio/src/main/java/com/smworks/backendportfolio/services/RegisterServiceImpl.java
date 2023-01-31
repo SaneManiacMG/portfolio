@@ -26,7 +26,7 @@ public class RegisterServiceImpl implements RegisterService {
     public ResponseEntity<Object> createNewUserLogin(@RequestBody RegisterRequest registerRequest) {
         if (registerRequest.getUsername().isBlank() || registerRequest.getEmail().isBlank() ||
                 registerRequest.getPassword().isBlank()) {
-            return new ResponseEntity<>("Not all values provided", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Missing value/s", HttpStatus.NOT_ACCEPTABLE);
         }
 
         Optional<User> existingUserByEmail = userRepository.findByEmail(registerRequest.getEmail());

@@ -59,7 +59,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest_400() {
+    public void authenticateTest_406() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
@@ -75,10 +75,10 @@ public class LoginServiceTest {
         ResponseEntity<Object> response4 = loginService.authenticate(request4);
 
 
-        assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, response3.getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, response4.getStatusCode());
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response1.getStatusCode());
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response2.getStatusCode());
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response3.getStatusCode());
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, response4.getStatusCode());
         assertEquals("Missing value/s", response1.getBody());
     }
 
@@ -99,12 +99,13 @@ public class LoginServiceTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response1.getStatusCode());
         assertEquals(HttpStatus.UNAUTHORIZED, response2.getStatusCode());
         assertEquals(HttpStatus.UNAUTHORIZED, response3.getStatusCode());
-        assertEquals("Invalid username or password", response1.getBody());
+        assertEquals("Invalid username/password", response1.getBody());
     }
 
     @Test
     public void authenticateTest_403() {
         login2 = new Login("GeneratedSequence", "123456789", false);
+
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login2));
