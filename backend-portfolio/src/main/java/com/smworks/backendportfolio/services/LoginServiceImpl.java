@@ -38,16 +38,15 @@ public class LoginServiceImpl implements LoginService {
         }
 
         Optional<Login> loginUser = loginRepository.findById(userId);
+        Login loggedInUser = loginUser.get();
 
-        if (loginUser.get().getActive()) {
-            Login loggedInUser = loginUser.get();
-            if (loginUser.isPresent() && request.getPassword().equals(loginUser.get().getPassword())) {
-                return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+        if (loginUser.isPresent() && request.getPassword().equals(loginUser.get().getPassword())) {
+            if (!loginUser.get().getActive()) {
+                return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
             }
+            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
         }
     }
 }
