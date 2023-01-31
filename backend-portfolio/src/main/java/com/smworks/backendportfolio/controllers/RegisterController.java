@@ -4,7 +4,6 @@ import com.smworks.backendportfolio.models.RegisterRequest;
 import com.smworks.backendportfolio.services.RegisterServiceImpl;
 import com.smworks.backendportfolio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +20,6 @@ public class RegisterController {
 
     @PostMapping("/newUser")
     public ResponseEntity<Object> registerNewUser(@RequestBody RegisterRequest registerRequest) {
-        if (registerRequest.getEmail().isEmpty()) {
-            return new ResponseEntity<>("Missing email", HttpStatus.BAD_REQUEST);
-        } else if (registerRequest.getUsername().isEmpty()) {
-            return new ResponseEntity<>("Missing username", HttpStatus.BAD_REQUEST);
-        } else {
-            return registerServiceImpl.createNewUserLogin(registerRequest);
-        }
+        return registerServiceImpl.createNewUserLogin(registerRequest);
     }
 }
