@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class RegisterServiceTest {
     User newUser;
-    private Login login;
     @Mock
     private UserRepository userRepository;
     @Mock
