@@ -30,7 +30,7 @@ public class LoginServiceTest {
     @InjectMocks
     private LoginServiceImpl loginService;
     private User user;
-    private Login login;
+    private Login login, login2;
     private LoginRequest request1, request2;
 
     @BeforeEach
@@ -43,16 +43,81 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void authenticateTest() {
+    public void authenticateTest_200() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
-        request1 = new LoginRequest(user.getUsername(), login.getPassword());
-        request2 = new LoginRequest(user.getEmail(), login.getPassword());
+
+        LoginRequest request1 = new LoginRequest(user.getUsername(), login.getPassword());
+        LoginRequest request2 = new LoginRequest(user.getEmail(), login.getPassword());
+
         ResponseEntity<Object> response1 = loginService.authenticate(request1);
         ResponseEntity<Object> response2 = loginService.authenticate(request2);
+
         assertEquals(HttpStatus.OK, response1.getStatusCode());
         assertEquals(HttpStatus.OK, response2.getStatusCode());
+    }
 
+    @Test
+    public void authenticateTest_400() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
+
+        LoginRequest request1 = new LoginRequest("", login.getPassword());
+        LoginRequest request2 = new LoginRequest(user.getEmail(), "");
+        LoginRequest request3 = new LoginRequest(user.getUsername(), "");
+        LoginRequest request4 = new LoginRequest("", "");
+
+        ResponseEntity<Object> response1 = loginService.authenticate(request1);
+        ResponseEntity<Object> response2 = loginService.authenticate(request2);
+        ResponseEntity<Object> response3 = loginService.authenticate(request3);
+        ResponseEntity<Object> response4 = loginService.authenticate(request4);
+
+
+        assertEquals(HttpStatus.BAD_REQUEST, response1.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response2.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response3.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response4.getStatusCode());
+        assertEquals("Missing value/s", response1.getBody());
+    }
+
+    @Test
+    public void authenticateTest_401() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login));
+
+        LoginRequest request1 = new LoginRequest(user.getUsername(), "123123123");
+        LoginRequest request2 = new LoginRequest(user.getEmail(), "123123123");
+        LoginRequest request3 = new LoginRequest("Random Value", login.getPassword());
+
+        ResponseEntity<Object> response1 = loginService.authenticate(request1);
+        ResponseEntity<Object> response2 = loginService.authenticate(request2);
+        ResponseEntity<Object> response3 = loginService.authenticate(request3);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response1.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, response2.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, response3.getStatusCode());
+        assertEquals("Invalid username or password", response1.getBody());
+    }
+
+    @Test
+    public void authenticateTest_403() {
+        login2 = new Login("GeneratedSequence", "123456789", false);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(loginRepository.findById(user.getUserId())).thenReturn(Optional.of(login2));
+
+        LoginRequest request1 = new LoginRequest(user.getUsername(), login2.getPassword());
+        LoginRequest request2 = new LoginRequest(user.getEmail(), login2.getPassword());
+
+        ResponseEntity<Object> response1 = loginService.authenticate(request1);
+        ResponseEntity<Object> response2 = loginService.authenticate(request2);
+
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+        assertEquals("Account locked", response1.getBody());
+        assertEquals("Account locked", response2.getBody());
     }
 }
