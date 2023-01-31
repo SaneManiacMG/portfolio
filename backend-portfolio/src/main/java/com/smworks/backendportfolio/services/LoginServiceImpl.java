@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public ResponseEntity<Object> authenticate(LoginRequest request) {
         if (request.getPassword().isBlank() || request.getUserIdentifier().isBlank()) {
-            return new ResponseEntity<>("Not all values provided", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Missing value/s", HttpStatus.BAD_REQUEST);
         }
 
         Optional<User> existingUserByEmail = userRepository.findByEmail(request.getUserIdentifier());
@@ -44,10 +44,10 @@ public class LoginServiceImpl implements LoginService {
             if (loginUser.isPresent() && request.getPassword().equals(loginUser.get().getPassword())) {
                 return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Account locked", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
             }
         } else {
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
         }
     }
 }
