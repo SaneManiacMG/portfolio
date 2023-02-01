@@ -25,9 +25,7 @@ public class UserServiceTest {
     private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
-    User user1;
-    User user2;
-    User user3;
+    User user1, user2, user3, user4, user5;
     List<User> users = new ArrayList<>();
 
 
@@ -41,6 +39,7 @@ public class UserServiceTest {
                 "dummy1@email.com", "0123456789", "ADMIN",true);
         users.add(user1);
         users.add(user2);
+        userRepository.save(user1);
     }
 
     @Test
@@ -147,18 +146,44 @@ public class UserServiceTest {
 
     @Test
     public void testUpdateUserDetails_CONFLICT() {
+        User existingUser = new User();
+        existingUser.setEmail(user1.getEmail());
+        existingUser.setUserId(user1.getUserId());
+        existingUser.setUsername(user1.getUsername());
 
+        when(userRepository.findById(existingUser.getUserId())).thenReturn(Optional.of(user1));
+        when(userRepository.findByUsername(existingUser.getUsername())).thenReturn(Optional.of(user1));
+        when(userRepository.findByEmail(existingUser.getEmail())).thenReturn(Optional.of(user1));
+
+        ResponseEntity<Object> response = userServiceImpl.updateUserDetails(existingUser);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Username/email already taken", response.getBody());
     }
 
     @Test
     public void testDeleteUserRecord_OK() {
         when(userRepository.existsById(user1.getUserId())).thenReturn(true);
+
         doNothing().when(userRepository).deleteById(user1.getUserId());
+
         ResponseEntity<Object> response = userServiceImpl.deleteUserRecord(user1);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("User deleted", response.getBody());
+
         verify(userRepository, times(1)).existsById(user1.getUserId());
         verify(userRepository, times(1)).deleteById(user1.getUserId());
+    }
+
+    @Test
+    public void testDeleteUserRecord_NOT_FOUND() {
+        when(userRepository.findById("RandomId")).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = userServiceImpl.deleteUserRecord(user1);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("User not found", response.getBody());
     }
 
     @Test
@@ -166,11 +191,30 @@ public class UserServiceTest {
         user3 = new User("GENERATED_ID", "TestAcc1",
                 "Test", "Acc",
                 "test1@email.com", "0123456789", "TEST",true);
+
         when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.empty());
         when(userRepository.save(user3)).thenReturn(user3);
+
         ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
+
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(user3.toString(), response.getBody().toString());
+    }
+
+    @Test
+    public void testCreateUserRecord_CONFLICT() {
+        user3 = new User();
+        user3.setUsername(user1.getUsername());
+        user3.setEmail(user1.getUsername());
+        user3.setUserId("RandomId");
+
+        when(userRepository.findByEmail(user3.getEmail())).thenReturn(Optional.of(user1));
+        when(userRepository.findByUsername(user3.getUsername())).thenReturn(Optional.of(user1));
+
+        ResponseEntity<Object> response = userServiceImpl.createUserRecord(user3);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Username/email already taken", response.getBody().toString());
     }
 }

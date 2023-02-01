@@ -83,21 +83,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Object> updateUserDetails(User user) {
-        try {
-            if (userRepository.findById(user.getUserId()).isPresent()) {
-                userRepository.save(user);
-                Optional<User> optionalUpdatedUser = userRepository.findById(user.getUserId());
+        Optional<User> existingUserByUsername = userRepository.findByUsername(user.getUsername());
+        Optional<User> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+        Optional<User> existingUserById = userRepository.findById(user.getUserId());
 
-                User updatedUser = optionalUpdatedUser.get();
-
-                return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        if (existingUserById.isPresent()) {
+            if (existingUserByEmail.isEmpty() &&
+                    existingUserByUsername.isEmpty()) {
+                try {
+                    userRepository.save(user);
+                    return new ResponseEntity<>(user, HttpStatus.OK);
+                } catch (Exception e) {
+                    return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Username/email already taken", HttpStatus.CONFLICT);
             }
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("Username/email already taken", HttpStatus.CONFLICT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -120,7 +123,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> existingUserByUsername = userRepository.findByUsername(user.getUsername());
 
         if (existingUserByEmail.isPresent() || existingUserByUsername.isPresent()) {
-            return new ResponseEntity<>("Username or email already exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Username/email already taken", HttpStatus.CONFLICT);
         } else {
             try {
                 user.setUserId(generateUserId());
