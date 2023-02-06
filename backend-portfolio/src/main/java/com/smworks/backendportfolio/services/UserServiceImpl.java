@@ -2,7 +2,6 @@ package com.smworks.backendportfolio.services;
 
 import com.smworks.backendportfolio.models.User;
 import com.smworks.backendportfolio.repositories.UserRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
