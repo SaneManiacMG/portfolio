@@ -24,6 +24,7 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
     private LoginRepository loginRepository;
 
     private String userId;
+    private String userPassword;
 
     @Override
     public ResponseEntity<Object> authenticate(LoginRequest request) {
