@@ -8,6 +8,8 @@ import com.smworks.backendportfolio.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,6 +26,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public ResponseEntity<Object> createNewUserLogin(@RequestBody RegisterRequest registerRequest) {
+        String encodedPassword;
         if (registerRequest.getUsername().isBlank() || registerRequest.getEmail().isBlank() ||
                 registerRequest.getPassword().isBlank()) {
             return new ResponseEntity<>("Missing value/s", HttpStatus.NOT_ACCEPTABLE);
@@ -32,9 +35,12 @@ public class RegisterServiceImpl implements RegisterService {
         Optional<User> existingUserByEmail = userRepository.findByEmail(registerRequest.getEmail());
         Optional<User> existingUserByUsername = userRepository.findByUsername(registerRequest.getUsername());
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+         encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
+
         if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() &&
                 existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
-            Login savedUser = new Login(existingUserByUsername.get().getUserId(), registerRequest.getPassword(),
+            Login savedUser = new Login(existingUserByUsername.get().getUserId(), encodedPassword,
                     true);
             try {
                 loginRepository.save(savedUser);
