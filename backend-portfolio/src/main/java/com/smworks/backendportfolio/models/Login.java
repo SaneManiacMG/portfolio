@@ -1,32 +1,34 @@
 package com.smworks.backendportfolio.models;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Collection;
 
 @Entity
 @Table(name = "logins")
-public class Login {
+public class Login implements UserDetails {
     @Id
     @Column(name = "user_id")
     private String userId;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private Boolean active;
 
     public Login() {
     }
 
-    public Login(String userId, String password, Boolean active) {
+    public Login(String userId, String password) {
         this.userId = userId;
         this.password = password;
-        this.active = active;
     }
 
-    public String getUserId() {
-        return userId;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
     public String getPassword() {
@@ -37,12 +39,33 @@ public class Login {
         this.password = password;
     }
 
-    public Boolean getActive() {
-        return active;
+    @Override
+    public String getUsername() {
+        return this.userId;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setUsername(String userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 
     @Override
@@ -50,7 +73,6 @@ public class Login {
         return "Login{" +
                 "userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
-                ", active=" + active +
                 '}';
     }
 }
