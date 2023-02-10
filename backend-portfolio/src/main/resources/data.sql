@@ -7,7 +7,7 @@ values
 ('101', 'dummy3deactivatedAcc', 'dummy3', 'deactivatedAcc', 'dummy3@email.com', '1234567899', 'USER', false);
 
 insert into logins
-(user_id, password, active)
+(user_id, password)
 values
-('123456789', 'p@ssw0rd1', true),
-('101', '123456', false);
+('123456789', 'p@ssw0rd1'),
+('101', '123456');
