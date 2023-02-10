@@ -36,12 +36,12 @@ public class RegisterServiceImpl implements RegisterService {
         Optional<User> existingUserByUsername = userRepository.findByUsername(registerRequest.getUsername());
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-         encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
 
         if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() &&
                 existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
             Login savedUser = new
-                    Login(existingUserByUsername.get().getUserId(), encodedPassword);
+                    Login(existingUserByUsername.get().getUserId(), encodedPassword, true);
             try {
                 loginRepository.save(savedUser);
                 return new ResponseEntity<>(savedUser, HttpStatus.CREATED);

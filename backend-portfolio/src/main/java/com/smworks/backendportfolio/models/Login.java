@@ -18,12 +18,16 @@ public class Login implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private Boolean enabled = isEnabled();
+
     public Login() {
     }
 
-    public Login(String userId, String password) {
+    public Login(String userId, String password, Boolean isEnabled) {
         this.userId = userId;
         this.password = password;
+        this.enabled = isEnabled;
     }
 
     @Override

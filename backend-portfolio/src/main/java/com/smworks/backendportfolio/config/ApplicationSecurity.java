@@ -35,7 +35,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/login", "/register/newUser", "/users/addUser").permitAll().anyRequest().authenticated();
+        http.authorizeRequests().antMatchers("/login", "/register/newUser", "/users/addUser")
+                .permitAll().anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());

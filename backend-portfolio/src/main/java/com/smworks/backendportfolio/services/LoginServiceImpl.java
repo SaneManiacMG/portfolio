@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -47,15 +49,24 @@ public class LoginServiceImpl implements LoginService {
         }
 
         Optional<Login> loginUser = loginRepository.findById(userId);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(loginUser.get().getPassword());
+        System.out.println("\n" + loginUser.get().getPassword() + "\n" + encodedPassword + "\n");
 
-        if (loginUser.isPresent() && request.getPassword().equals(loginUser.get().getPassword())) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginUser.get().getUsername(), loginUser.get().getPassword()));
+        System.out.println(authentication);
+        Login login = (Login) authentication.getPrincipal();
+        System.out.println(login.toString());
+        String accessToken = jwtUtil.generateAccessToken(login);
+        System.out.println(accessToken);
+
+        if (loginUser.isPresent() && encodedPassword.equals(loginUser.get().getPassword())) {
             if (!loginUser.get().isEnabled()) {
                 return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
             } else {
                 try {
-                    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.get().getUsername(), loginUser.get().getPassword()));
-                    Login login = (Login) authentication.getPrincipal();
-                    String accessToken = jwtUtil.generateAccessToken(login);
+
                     LoginResponse loginResponse = new LoginResponse(login.getUsername(), accessToken);
                     return new ResponseEntity<>(loginResponse, HttpStatus.OK);
                 } catch (Exception e) {
