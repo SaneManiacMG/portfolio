@@ -39,9 +39,8 @@ public class RegisterServiceTest {
     @Test
     public void registerNewUserTest_CREATED() {
         RegisterRequest request = new RegisterRequest(user.getUsername(), user.getEmail(),
-                "123456789");
-        Login savedLogin = new Login(user.getUserId(), request.getPassword(),
-                true);
+                "$2a$10$GVqsYZMXBpbNQTh9wmv2WutP3rzXB35a2wY6QcSOsZJ4oNN.p37i6");
+        Login savedLogin = new Login(user.getUsername(), request.getPassword());
 
         when(userRepository.findByUsername(request.getUsername())).thenReturn(Optional.of(user));
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(user));

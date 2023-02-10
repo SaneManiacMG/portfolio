@@ -40,8 +40,8 @@ public class RegisterServiceImpl implements RegisterService {
 
         if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() &&
                 existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
-            Login savedUser = new Login(existingUserByUsername.get().getUserId(), encodedPassword,
-                    true);
+            Login savedUser = new
+                    Login(existingUserByUsername.get().getUserId(), encodedPassword);
             try {
                 loginRepository.save(savedUser);
                 return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
