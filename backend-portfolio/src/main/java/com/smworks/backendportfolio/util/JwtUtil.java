@@ -1,54 +1,55 @@
 package com.smworks.backendportfolio.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import com.smworks.backendportfolio.models.Login;
+import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
-@Service
+@Component
 public class JwtUtil {
+    private static final long EXPIRE_DURATION = 1000 * 60 * 60 * 24;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
     private String SECRET_KEY = "secret";
 
-    public String extractUserId(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String generateAccessToken(Login login) {
+        return Jwts.builder()
+                .setSubject(login.getUsername())
+                .setIssuer("SaneManiacWorks")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public Boolean validateAccessToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            LOGGER.error("JWT Expired\n" + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Token is empty\n" + e.getMessage());
+        } catch (MalformedJwtException e) {
+            LOGGER.error("JWT is invalid\n" + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            LOGGER.error("JWT is not supported\n" + e.getMessage());
+        } catch (SignatureException e) {
+            LOGGER.error("Signature validation failed\n" + e.getMessage());
+        }
+        return false;
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+    public String getSubject(String token) {
+        return parseClaims(token).getSubject();
     }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
-    }
-
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String userId = extractUserId(token);
-        return(userId.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
