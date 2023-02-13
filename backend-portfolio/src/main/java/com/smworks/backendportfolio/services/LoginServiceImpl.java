@@ -1,5 +1,6 @@
 package com.smworks.backendportfolio.services;
 
+import com.smworks.backendportfolio.filters.JwtRequestFiler;
 import com.smworks.backendportfolio.models.Login;
 import com.smworks.backendportfolio.models.LoginRequest;
 import com.smworks.backendportfolio.models.LoginResponse;
@@ -10,11 +11,9 @@ import com.smworks.backendportfolio.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,12 +23,11 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     JwtUtil jwtUtil;
     @Autowired
-    AuthenticationManager authenticationManager;
+    JwtRequestFiler jwtRequestFiler;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private LoginRepository loginRepository;
-    private String userId;
 
     @Override
     public ResponseEntity<Object> authenticate(LoginRequest request) {
@@ -40,6 +38,8 @@ public class LoginServiceImpl implements LoginService {
         Optional<User> existingUserByEmail = userRepository.findByEmail(request.getUserIdentifier());
         Optional<User> existingUserByUsername = userRepository.findByUsername(request.getUserIdentifier());
 
+        String userId;
+
         if (existingUserByEmail.isPresent()) {
             userId = existingUserByEmail.get().getUserId();
         } else if (existingUserByUsername.isPresent()) {
@@ -49,32 +49,33 @@ public class LoginServiceImpl implements LoginService {
         }
 
         Optional<Login> loginUser = loginRepository.findById(userId);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(loginUser.get().getPassword());
-        System.out.println("\n" + loginUser.get().getPassword() + "\n" + encodedPassword + "\n");
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUser.get().getUsername(), loginUser.get().getPassword()));
-        System.out.println(authentication);
-        Login login = (Login) authentication.getPrincipal();
-        System.out.println(login.toString());
-        String accessToken = jwtUtil.generateAccessToken(login);
-        System.out.println(accessToken);
-
-        if (loginUser.isPresent() && encodedPassword.equals(loginUser.get().getPassword())) {
-            if (!loginUser.get().isEnabled()) {
-                return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
-            } else {
-                try {
-
-                    LoginResponse loginResponse = new LoginResponse(login.getUsername(), accessToken);
-                    return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-                } catch (Exception e) {
-                    return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        } else {
+        if (!loginUser.isPresent()) {
             return new ResponseEntity<>("Invalid username/password", HttpStatus.UNAUTHORIZED);
+        }
+
+        Login foundUser = loginUser.get();
+        String hashedPassword = foundUser.getPassword();
+        System.out.println(foundUser.getUsername());
+        System.out.println(hashedPassword);
+
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(foundUser.getUsername(), foundUser.getPassword());
+            System.out.println(authenticationToken);
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(jwtRequestFiler.getRequest()));
+
+            String accessToken = jwtUtil.generateAccessToken(foundUser);
+
+            if (!foundUser.isEnabled()) {
+                return new ResponseEntity<>("Account locked", HttpStatus.FORBIDDEN);
+            }
+
+            LoginResponse response = new LoginResponse(foundUser.getUsername(), accessToken);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Invalid username/password", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
