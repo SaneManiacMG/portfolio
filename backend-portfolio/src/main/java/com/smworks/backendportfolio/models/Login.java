@@ -17,9 +17,8 @@ public class Login implements UserDetails {
     private String userId;
     @Column(nullable = false)
     private String password;
-
     @Column
-    private Boolean enabled = isEnabled();
+    private Boolean enabled;
 
     public Login() {
     }
@@ -35,6 +34,7 @@ public class Login implements UserDetails {
         return null;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -54,29 +54,23 @@ public class Login implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
-    @Override
-    public String toString() {
-        return "Login{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+
 }

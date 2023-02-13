@@ -27,8 +27,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public ResponseEntity<Object> createNewUserLogin(@RequestBody RegisterRequest registerRequest) {
         String encodedPassword;
-        if (registerRequest.getUsername().isBlank() || registerRequest.getEmail().isBlank() ||
-                registerRequest.getPassword().isBlank()) {
+        if (registerRequest.getUsername().isBlank() || registerRequest.getEmail().isBlank() || registerRequest.getPassword().isBlank()) {
             return new ResponseEntity<>("Missing value/s", HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -38,10 +37,8 @@ public class RegisterServiceImpl implements RegisterService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
 
-        if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() &&
-                existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
-            Login savedUser = new
-                    Login(existingUserByUsername.get().getUserId(), encodedPassword, true);
+        if (existingUserByUsername.isPresent() && existingUserByEmail.isPresent() && existingUserByEmail.get().getUserId().equals(existingUserByUsername.get().getUserId())) {
+            Login savedUser = new Login(existingUserByUsername.get().getUserId(), encodedPassword, true);
             try {
                 loginRepository.save(savedUser);
                 return new ResponseEntity<>(savedUser, HttpStatus.CREATED);

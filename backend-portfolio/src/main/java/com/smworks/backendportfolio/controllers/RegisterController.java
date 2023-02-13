@@ -2,7 +2,6 @@ package com.smworks.backendportfolio.controllers;
 
 import com.smworks.backendportfolio.models.RegisterRequest;
 import com.smworks.backendportfolio.services.RegisterService;
-import com.smworks.backendportfolio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegisterController {
     @Autowired
     private RegisterService registerService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping("/newUser")
     public ResponseEntity<Object> registerNewUser(@RequestBody RegisterRequest registerRequest) {

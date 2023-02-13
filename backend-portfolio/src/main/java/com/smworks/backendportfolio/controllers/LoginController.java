@@ -2,7 +2,6 @@ package com.smworks.backendportfolio.controllers;
 
 import com.smworks.backendportfolio.models.LoginRequest;
 import com.smworks.backendportfolio.services.LoginService;
-import com.smworks.backendportfolio.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     @Autowired
     private LoginService loginService;
-
-    @Autowired
-    JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {

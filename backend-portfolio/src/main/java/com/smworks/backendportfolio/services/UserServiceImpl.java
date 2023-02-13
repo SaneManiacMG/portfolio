@@ -25,8 +25,7 @@ public class UserServiceImpl implements UserService {
         try {
             if (!userRepository.findAll().isEmpty())
                 return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
-            else
-                return new ResponseEntity<>("No users found", HttpStatus.NOT_FOUND);
+            else return new ResponseEntity<>("No users found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -40,11 +39,9 @@ public class UserServiceImpl implements UserService {
             if (userRepository.existsById(user.getUserId())) {
                 foundUser = userOptional.get();
                 return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
-            } else
-                return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity<>("User ID not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,11 +53,9 @@ public class UserServiceImpl implements UserService {
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
                 foundUser = userOptional.get();
                 return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
-            } else
-                return new ResponseEntity<>("Username not found", HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity<>("Username not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,11 +67,9 @@ public class UserServiceImpl implements UserService {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
                 foundUser = userOptional.get();
                 return new ResponseEntity<>(foundUser, HttpStatus.FOUND);
-            } else
-                return new ResponseEntity<>("Email not found", HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity<>("Email not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.toString(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -87,8 +80,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> existingUserById = userRepository.findById(user.getUserId());
 
         if (existingUserById.isPresent()) {
-            if (existingUserByEmail.isEmpty() &&
-                    existingUserByUsername.isEmpty()) {
+            if (existingUserByEmail.isEmpty() && existingUserByUsername.isEmpty()) {
                 try {
                     userRepository.save(user);
                     return new ResponseEntity<>(user, HttpStatus.OK);
@@ -109,8 +101,7 @@ public class UserServiceImpl implements UserService {
             if (userRepository.existsById(user.getUserId())) {
                 userRepository.deleteById(user.getUserId());
                 return new ResponseEntity<>("User deleted", HttpStatus.OK);
-            } else
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            } else return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

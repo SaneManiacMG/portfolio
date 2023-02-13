@@ -38,7 +38,7 @@ public class LoginServiceTest {
         user = new User("GeneratedSequence", "Dummy2User", "Dummy", "Two",
                 "dummy-two@email.com", "0129982254", "TEST", true);
         userRepository.save(user);
-        login = new Login("GeneratedSequence", "123456789");
+        login = new Login("GeneratedSequence", "123456789", true);
         loginRepository.save(login);
     }
 
@@ -104,7 +104,7 @@ public class LoginServiceTest {
 
     @Test
     public void authenticateTest_FORBIDDEN() {
-        login2 = new Login("GeneratedSequence", "123456789");
+        login2 = new Login("GeneratedSequence", "123456789", false);
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));

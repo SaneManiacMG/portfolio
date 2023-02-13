@@ -44,11 +44,6 @@ public class RegisterRequest {
 
     @Override
     public String toString() {
-        return "RegisterRequest{" +
-                "userId='" + userId + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return "RegisterRequest{" + "userId='" + userId + '\'' + ", username='" + username + '\'' + ", email='" + email + '\'' + ", password='" + password + '\'' + '}';
     }
 }

@@ -4,6 +4,7 @@ import com.smworks.backendportfolio.filters.JwtRequestFiler;
 import com.smworks.backendportfolio.repositories.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletResponse;
 
+@Configuration
 @EnableWebSecurity(debug = true)
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     @Autowired

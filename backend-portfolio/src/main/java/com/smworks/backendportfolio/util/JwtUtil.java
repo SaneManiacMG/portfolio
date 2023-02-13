@@ -12,7 +12,7 @@ import java.util.Date;
 public class JwtUtil {
     private static final long EXPIRE_DURATION = 1000 * 60 * 60 * 24;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-    private String SECRET_KEY = "secret";
+    private final String SECRET_KEY = "secret";
 
     public String generateAccessToken(Login login) {
         return Jwts.builder()
@@ -47,9 +47,6 @@ public class JwtUtil {
     }
 
     public Claims parseClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 }
