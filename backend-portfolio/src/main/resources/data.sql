@@ -9,5 +9,6 @@ values
 insert into logins
 (user_id, password)
 values
-('123456789', 'p@ssw0rd1'),
-('101', '123456');
+('123456789', '$2a$10$yG4ELtDpzKbpAjDzlT95o.3McaaDOtCbJemFr4No532DOwjzH3d9C');
+
+--password is p@ssw0rd1
