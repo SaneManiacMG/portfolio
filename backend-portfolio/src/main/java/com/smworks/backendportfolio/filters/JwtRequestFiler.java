@@ -22,9 +22,20 @@ public class JwtRequestFiler extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
 
+    HttpServletRequest request;
+
+    public HttpServletRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        setRequest(request);
 
         if (!hasAuthorizationBearer(request)) {
             filterChain.doFilter(request, response);
