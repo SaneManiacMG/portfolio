@@ -4,6 +4,7 @@ import com.smworks.backendportfolio.models.Login;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -12,7 +13,8 @@ import java.util.Date;
 public class JwtUtil {
     private static final long EXPIRE_DURATION = 1000 * 60 * 60 * 24;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-    private final String SECRET_KEY = "secret";
+    @Value("${app.jwt.secret}")
+    private String SECRET_KEY;
 
     public String generateAccessToken(Login login) {
         return Jwts.builder()
