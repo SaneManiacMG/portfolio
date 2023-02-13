@@ -31,7 +31,7 @@ public class RegisterServiceTest {
 
     @BeforeEach
     public void setup() {
-        user = new User("GeneratedSequence", "Username1", "Test", "Account",
+        user = new User("Username1", "Username1", "Test", "Account",
                 "test@email.com", "0129982254", "TEST", true);
         userRepository.save(user);
     }
@@ -39,8 +39,8 @@ public class RegisterServiceTest {
     @Test
     public void registerNewUserTest_CREATED() {
         RegisterRequest request = new RegisterRequest(user.getUsername(), user.getEmail(),
-                "$2a$10$GVqsYZMXBpbNQTh9wmv2WutP3rzXB35a2wY6QcSOsZJ4oNN.p37i6");
-        Login savedLogin = new Login(user.getUsername(), request.getPassword());
+                "123456789");
+        Login savedLogin = new Login(user.getUsername(), request.getPassword(), true);
 
         when(userRepository.findByUsername(request.getUsername())).thenReturn(Optional.of(user));
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(user));

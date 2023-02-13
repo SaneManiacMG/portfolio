@@ -74,12 +74,11 @@ public class LoginServiceTest {
         ResponseEntity<Object> response3 = loginService.authenticate(request3);
         ResponseEntity<Object> response4 = loginService.authenticate(request4);
 
-
+        assertEquals("Missing value/s", response1.getBody());
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response1.getStatusCode());
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response2.getStatusCode());
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response3.getStatusCode());
         assertEquals(HttpStatus.NOT_ACCEPTABLE, response4.getStatusCode());
-        assertEquals("Missing value/s", response1.getBody());
     }
 
     @Test
@@ -96,10 +95,11 @@ public class LoginServiceTest {
         ResponseEntity<Object> response2 = loginService.authenticate(request2);
         ResponseEntity<Object> response3 = loginService.authenticate(request3);
 
+        assertEquals("Invalid username/password", response1.getBody());
         assertEquals(HttpStatus.UNAUTHORIZED, response1.getStatusCode());
         assertEquals(HttpStatus.UNAUTHORIZED, response2.getStatusCode());
         assertEquals(HttpStatus.UNAUTHORIZED, response3.getStatusCode());
-        assertEquals("Invalid username/password", response1.getBody());
+
     }
 
     @Test
@@ -116,9 +116,10 @@ public class LoginServiceTest {
         ResponseEntity<Object> response1 = loginService.authenticate(request1);
         ResponseEntity<Object> response2 = loginService.authenticate(request2);
 
-        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
-        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
         assertEquals("Account locked", response1.getBody());
         assertEquals("Account locked", response2.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+
     }
 }

@@ -59,7 +59,7 @@ public class Login implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.enabled;
     }
 
     @Override
@@ -69,8 +69,15 @@ public class Login implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 
-
+    @Override
+    public String toString() {
+        return "Login{" +
+                "userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
 }
