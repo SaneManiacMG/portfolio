@@ -15,6 +15,11 @@ namespace backend_portfolio_csharp.Services
             throw new NotImplementedException();
         }
 
+        public string GenerateUserSequence()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<User> GetAllUsers()
         {
             throw new NotImplementedException();

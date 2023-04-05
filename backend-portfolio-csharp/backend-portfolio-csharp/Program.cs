@@ -1,3 +1,6 @@
+using backend_portfolio_csharp.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +18,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+builder.Services.AddDbContext<DbContextBackend>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("PortfolioConnectionString")));
 
 app.UseHttpsRedirection();
 
