@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "pUS9IxD3Enus/BLOMYWFT3QKEK467hPRiL+lOHeKkn4BIi+2wLydmuM3AUUJrH7PTm14uY7Z10rRrl0h7NK5VQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mapap\\Programming\\FullStack\\portfolio\\backend-portfolio-csharp\\backend-portfolio-csharp\\backend-portfolio-csharp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mapap\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\Mapap\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\Mapap\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\Mapap\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\Mapap\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\Mapap\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
