@@ -12,9 +12,9 @@ namespace Portfolio.Backend.Csharp.Interfaces
 
         public Task<User> CreateUser(User user);
 
-        public Task<User> UpdateUser(string password);
+        public Task<User> UpdateUser(User user);
 
-        public Task<User> DeleteUser(User user);
+        public Task<User> DeleteUser(string userId);
 
     }
 }

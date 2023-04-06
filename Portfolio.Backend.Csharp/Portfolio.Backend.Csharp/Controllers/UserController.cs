@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Controllers
@@ -7,6 +8,13 @@ namespace Portfolio.Backend.Csharp.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpGet]
         [Route("/GetUsers")]
         public async Task<IActionResult> GetAllUsers()
@@ -36,8 +44,8 @@ namespace Portfolio.Backend.Csharp.Controllers
         }
 
         [HttpDelete]
-        [Route("/DeleteUser")]
-        public async Task<IActionResult> DeleteUser([FromBody] User user)
+        [Route("/DeleteUser/{userId}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
         {
             return Ok();
         }
