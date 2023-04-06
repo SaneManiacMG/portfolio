@@ -1,5 +1,5 @@
-using backend_portfolio_csharp.Data;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Backend.Csharp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<PortfolioDbContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("PortfolioApiConnectionString")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,9 +22,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-builder.Services.AddDbContext<DbContextBackend>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("PortfolioConnectionString")));
 
 app.UseHttpsRedirection();
 

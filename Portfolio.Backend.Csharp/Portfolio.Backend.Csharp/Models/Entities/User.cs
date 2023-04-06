@@ -1,4 +1,6 @@
-﻿namespace backend_portfolio_csharp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Portfolio.Backend.Csharp.Models.Entities
 {
     public class User
     {
@@ -8,7 +10,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNr { get; set; }
-        public Enum Role { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsOwner { get; set; }
     }
 }
