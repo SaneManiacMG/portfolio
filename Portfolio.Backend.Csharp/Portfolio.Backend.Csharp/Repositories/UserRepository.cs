@@ -1,4 +1,5 @@
-﻿using Portfolio.Backend.Csharp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Portfolio.Backend.Csharp.Data;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 
@@ -17,19 +18,21 @@ namespace Portfolio.Backend.Csharp.Repositories
         {
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
+
             return user;
         }
 
-        public async Task<string> DeleteUserAsync(string userId)
+        public async Task<User> DeleteUserAsync(User user)
         {
-            var user = await this.GetUserByIdAsync(userId);
-            if (user == null)
-            {
-                return "UserID not found";
-            }
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
+
             return user;
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> GetUserByIdAsync(string userId)
@@ -37,14 +40,36 @@ namespace Portfolio.Backend.Csharp.Repositories
             return await _dbContext.Users.FindAsync(userId);
         }
 
-        public Task<List<User>> GetUsersAsync()
+        public Task<User> GetUserByUsernameAsync(string username)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public Task UpdateUserAsync(User user)
+        public async Task<List<User>> GetUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Users.ToListAsync();
+        }
+
+        public async Task<User> UpdateUserAsync(User user)
+        {
+            var existingUser = await this.GetUserByIdAsync(user.UserId);
+            
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            existingUser.Username = user.Username;
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.Email = user.Email;
+            existingUser.PhoneNr = user.PhoneNr;
+
+            _dbContext.Update(existingUser);
+            await _dbContext.SaveChangesAsync();
+
+            return existingUser;
         }
     }
 }
+    

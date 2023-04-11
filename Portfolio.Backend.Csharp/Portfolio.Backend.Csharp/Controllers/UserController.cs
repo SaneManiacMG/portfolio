@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
+using Portfolio.Backend.Csharp.Models.Requests;
 
 namespace Portfolio.Backend.Csharp.Controllers
 {
@@ -22,30 +23,30 @@ namespace Portfolio.Backend.Csharp.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("/GetUser/{userId}")]
-        public async Task<IActionResult> GetUser([FromRoute] string userId)
+        [HttpPost]
+        [Route("/GetUser")]
+        public async Task<IActionResult> GetUser([FromBody] UserRequest userRequest)
         {
             return Ok();
         }
 
         [HttpPost]
         [Route("/AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] User user)
+        public async Task<IActionResult> AddUser([FromBody] UserRequest userRequest)
         {
             return Ok();
         }
 
         [HttpPut]
         [Route("/UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        public async Task<IActionResult> UpdateUser([FromBody] UserRequest userRequest)
         {
             return Ok();
         }
 
         [HttpDelete]
         [Route("/DeleteUser/{userId}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
+        public async Task<IActionResult> DeleteUser([FromRoute] UserRequest userRequest)
         {
             return Ok();
         }
