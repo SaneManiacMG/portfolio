@@ -9,48 +9,60 @@ namespace Portfolio.Backend.Csharp.Services
         private readonly IUserRepository _userRepository;
         private readonly ISequenceGenerator _sequenceGenerator;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator)
         {
             _userRepository = userRepository;
-            _sequenceGenerator = new SequenceGenerator();
+            _sequenceGenerator = sequenceGenerator;
         }
 
-        public Task<User> AddUser(UserRequest userRequest)
+        public async Task<User> AddUser(UserRequest userRequest)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> DeleteUser(string userId)
+        public async Task<User> DeleteUser(string userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetUser(UserRequest userRequest)
+        public async Task<User> GetUser(UserRequest userRequest)
         {
-            throw new NotImplementedException();
+            var usernameExists = await _userRepository.GetUserByUsernameAsync(userRequest.Username);
+            if (usernameExists != null)
+            {
+                return usernameExists;
+            }
+
+            var emailExists = await _userRepository.GetUserByEmailAsync(userRequest.Email);
+            if (emailExists != null)
+            {
+                return emailExists;
+            }
+
+            return null;
         }
 
-        public Task<User> GetUserByEmail(string email)
+        private async Task<User> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetUserByEmailAsync(email);
         }
 
-        private Task<User> GetUserById(string userId)
+        private async Task<User> GetUserById(string userId)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public Task<User> GetUserByUsername(string username)
+        private async Task<User> GetUserByUsername(string username)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetUserByUsernameAsync(username);
         }
 
-        public Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetUsersAsync();
         }
 
-        public Task<User> UpdateUser(UserRequest userRequest)
+        public async Task<User> UpdateUser(UserRequest userRequest)
         {
             throw new NotImplementedException();
         }
