@@ -1,6 +1,6 @@
 ﻿using Portfolio.Backend.Csharp.Interfaces;
-using Portfolio.Backend.Csharp.Models.Entities;
-using Portfolio.Backend.Csharp.Models.Requests;
+using Portfolio.Backend.Csharp.Models.User;
+using Portfolio.Backend.Csharp.Models.User.Requests;
 
 namespace Portfolio.Backend.Csharp.Services
 {
@@ -17,28 +17,36 @@ namespace Portfolio.Backend.Csharp.Services
 
         public async Task<User> AddUser(UserRequest userRequest)
         {
-            throw new NotImplementedException();
+            var userExists = await GetUser(userRequest.Username, userRequest.Email)!;
+            if(userExists != null)
+            {
+                return userExists;
+            }
+
+            string generatedUserId = _sequenceGenerator.UserIdSequenceGenerator();
+            User newUser = new User(generatedUserId, userRequest);
+            return await _userRepository.AddUserAsync(newUser);
         }
 
         public async Task<User> DeleteUser(string userId)
         {
-            throw new NotImplementedException();
+            var userExists = await GetUserById(userId);
+            return await _userRepository.DeleteUserAsync(userExists)!;
         }
 
-        public async Task<User> GetUser(UserRequest userRequest)
+        public async Task<User> GetUser(string username, string email)
         {
-            var usernameExists = await _userRepository.GetUserByUsernameAsync(userRequest.Username);
+            var usernameExists = await GetUserByEmail(email);
             if (usernameExists != null)
             {
                 return usernameExists;
             }
 
-            var emailExists = await _userRepository.GetUserByEmailAsync(userRequest.Email);
+            var emailExists = await GetUserByUsername(username);
             if (emailExists != null)
             {
                 return emailExists;
             }
-
             return null;
         }
 
@@ -64,7 +72,18 @@ namespace Portfolio.Backend.Csharp.Services
 
         public async Task<User> UpdateUser(UserRequest userRequest)
         {
-            throw new NotImplementedException();
+            var userExists = await GetUser(userRequest.Username, userRequest.Email);
+            if (userExists != null)
+            {
+                userExists.Username = userRequest.Username;
+                userExists.FirstName = userRequest.FirstName;
+                userExists.LastName = userRequest.LastName;
+                userExists.Email = userRequest.Email;
+                userExists.PhoneNr = userRequest.PhoneNr;
+
+                return await _userRepository.UpdateUserAsync(userExists);
+            }
+            return null;
         }
     }
 }
