@@ -18,12 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 builder.Services.AddScoped<IUserService, UserService>();
-
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-});
-var mapper = config.CreateMapper();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<PortfolioDbContext>(
     options => options.UseSqlServer(

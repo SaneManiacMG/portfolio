@@ -56,17 +56,10 @@ namespace Portfolio.Backend.Csharp.Repositories
 
         public async Task<User> UpdateUserAsync(User user)
         {
-            var existingUser = await GetUserByIdAsync(user.UserId);
-            
-            if (existingUser == null)
-            {
-                return null;
-            }
-
-            _dbContext.Update(existingUser);
+            _dbContext.Update(user);
             await _dbContext.SaveChangesAsync();
 
-            return existingUser;
+            return user;
         }
     }
 }

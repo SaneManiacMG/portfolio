@@ -1,4 +1,5 @@
-﻿using Portfolio.Backend.Csharp.Interfaces;
+﻿using AutoMapper;
+using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.User;
 using Portfolio.Backend.Csharp.Models.User.Requests;
 
@@ -8,11 +9,13 @@ namespace Portfolio.Backend.Csharp.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ISequenceGenerator _sequenceGenerator;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator)
+        public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator, IMapper mapper)
         {
             _userRepository = userRepository;
             _sequenceGenerator = sequenceGenerator;
+            _mapper = mapper;
         }
 
         public async Task<User> AddUser(UserRequest userRequest)
@@ -36,17 +39,20 @@ namespace Portfolio.Backend.Csharp.Services
 
         public async Task<User> GetUser(string username, string email)
         {
-            var usernameExists = await GetUserByEmail(email);
-            if (usernameExists != null)
+            var usernameExistsByEmail = await GetUserByEmail(email);
+            if (usernameExistsByEmail != null)
             {
-                return usernameExists;
+                Console.WriteLine("User found by email :{0}", usernameExistsByEmail.Email);
+                return usernameExistsByEmail;
             }
 
-            var emailExists = await GetUserByUsername(username);
-            if (emailExists != null)
+            var userExistsByUsername = await GetUserByUsername(username);
+            if (userExistsByUsername != null)
             {
-                return emailExists;
+                Console.WriteLine("User found by username :{0}", userExistsByUsername.Username);
+                return userExistsByUsername;
             }
+            Console.WriteLine("No user found");
             return null;
         }
 
@@ -72,7 +78,9 @@ namespace Portfolio.Backend.Csharp.Services
 
         public async Task<User> UpdateUser(UserRequest userRequest)
         {
-            var userExists = await GetUser(userRequest.Username, userRequest.Email);
+            Console.WriteLine("Email: {0}\nUsername: {1}", userRequest.Email, userRequest.Username);
+            User userExists = await GetUser(userRequest.Username, userRequest.Email);
+
             if (userExists != null)
             {
                 userExists.Username = userRequest.Username;
@@ -83,6 +91,8 @@ namespace Portfolio.Backend.Csharp.Services
 
                 return await _userRepository.UpdateUserAsync(userExists);
             }
+
+            Console.WriteLine("Dataset in userExists\nId: {0}", userExists.UserId);
             return null;
         }
     }

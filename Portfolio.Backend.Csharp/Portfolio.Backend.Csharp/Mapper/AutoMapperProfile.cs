@@ -4,12 +4,11 @@ using Portfolio.Backend.Csharp.Models.User.Requests;
 
 namespace Portfolio.Backend.Csharp.Mapper
 {
-    public class MappingProfile : Profile
+    public class AutoMapperProfile : Profile
     {
-        public MappingProfile()
+        public AutoMapperProfile()
         {
-            CreateMap<UserRequest, User>();
-            CreateMap<UserLookupRequest, User>();
+            CreateMap<UserRequest, User>().ReverseMap();
         }
     }
 }
