@@ -1,4 +1,6 @@
-﻿namespace Portfolio.Backend.Csharp.Models.User.Responses
+﻿using Portfolio.Backend.Csharp.Models.Enums;
+
+namespace Portfolio.Backend.Csharp.Models.Responses
 {
     public class UserResponse
     {
@@ -7,5 +9,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNr { get; set; }
+        public Role Role { get; set; }
     }
 }

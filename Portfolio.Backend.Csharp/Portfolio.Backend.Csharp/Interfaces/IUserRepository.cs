@@ -1,4 +1,4 @@
-﻿using Portfolio.Backend.Csharp.Models.User;
+﻿using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Interfaces
 {

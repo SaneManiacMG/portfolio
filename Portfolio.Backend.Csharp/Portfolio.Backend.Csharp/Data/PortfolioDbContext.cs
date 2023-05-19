@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Portfolio.Backend.Csharp.Models.User;
+using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Data
 {
@@ -10,5 +10,6 @@ namespace Portfolio.Backend.Csharp.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Authentication> LoginDetails { get; set; }
     }
 }

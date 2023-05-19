@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Portfolio.Backend.Csharp.Interfaces;
-using Portfolio.Backend.Csharp.Models.User;
+using Portfolio.Backend.Csharp.Models.Entities;
+using Portfolio.Backend.Csharp.Models.Responses;
 using Portfolio.Backend.Csharp.Models.User.Requests;
-using Portfolio.Backend.Csharp.Models.User.Responses;
 
 namespace Portfolio.Backend.Csharp.Services
 {

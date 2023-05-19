@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Portfolio.Backend.Csharp.Models.User;
+using Portfolio.Backend.Csharp.Models.Entities;
+using Portfolio.Backend.Csharp.Models.Requests;
+using Portfolio.Backend.Csharp.Models.Responses;
 using Portfolio.Backend.Csharp.Models.User.Requests;
-using Portfolio.Backend.Csharp.Models.User.Responses;
 
 namespace Portfolio.Backend.Csharp.Mapper
 {
@@ -12,6 +13,8 @@ namespace Portfolio.Backend.Csharp.Mapper
             CreateMap<UserRequest, User>();
             CreateMap<User, UserResponse>();
             //CreateMap<List<User>, List<UserResponse>>();
+            CreateMap<AuthenticationRequest, Authentication>();
+            CreateMap<Authentication, AuthenticationResponse>();
         }
     }
 }
