@@ -2,3 +2,4 @@
 .vs
 obj
 bin
+/Portfolio.Backend.Csharp/Portfolio.Backend.Csharp/Migrations/20230406092704_InitialMigration.cs
