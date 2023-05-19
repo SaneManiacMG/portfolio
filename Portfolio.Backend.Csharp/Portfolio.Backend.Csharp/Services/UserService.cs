@@ -2,6 +2,7 @@
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.User;
 using Portfolio.Backend.Csharp.Models.User.Requests;
+using Portfolio.Backend.Csharp.Models.User.Responses;
 
 namespace Portfolio.Backend.Csharp.Services
 {
@@ -18,41 +19,42 @@ namespace Portfolio.Backend.Csharp.Services
             _mapper = mapper;
         }
 
-        public async Task<User> AddUser(UserRequest userRequest)
+        public async Task<UserResponse> AddUser(UserRequest userRequest)
         {
             var userExists = await GetUser(userRequest.Username, userRequest.Email)!;
             if(userExists != null)
             {
-                return userExists;
+                return _mapper.Map<UserResponse>(userExists);
             }
 
             string generatedUserId = _sequenceGenerator.UserIdSequenceGenerator();
             User newUser = new User(generatedUserId, userRequest);
-            return await _userRepository.AddUserAsync(newUser);
+            return _mapper.Map<UserResponse>(await _userRepository.AddUserAsync(newUser));
         }
 
-        public async Task<User> DeleteUser(string userId)
+        public async Task<UserResponse> DeleteUser(string userId)
         {
             var userExists = await GetUserById(userId);
-            return await _userRepository.DeleteUserAsync(userExists)!;
+            if(userExists != null)
+            {
+                return _mapper.Map<UserResponse>(await _userRepository.DeleteUserAsync(userExists));
+            }
+            return null;
         }
 
-        public async Task<User> GetUser(string username, string email)
+        private async Task<User> GetUser(string username, string email)
         {
             var usernameExistsByEmail = await GetUserByEmail(email);
             if (usernameExistsByEmail != null)
             {
-                Console.WriteLine("User found by email :{0}", usernameExistsByEmail.Email);
                 return usernameExistsByEmail;
             }
 
             var userExistsByUsername = await GetUserByUsername(username);
             if (userExistsByUsername != null)
             {
-                Console.WriteLine("User found by username :{0}", userExistsByUsername.Username);
                 return userExistsByUsername;
             }
-            Console.WriteLine("No user found");
             return null;
         }
 
@@ -76,9 +78,8 @@ namespace Portfolio.Backend.Csharp.Services
             return await _userRepository.GetUsersAsync();
         }
 
-        public async Task<User> UpdateUser(UserRequest userRequest)
+        public async Task<UserResponse> UpdateUser(UserRequest userRequest)
         {
-            Console.WriteLine("Email: {0}\nUsername: {1}", userRequest.Email, userRequest.Username);
             User userExists = await GetUser(userRequest.Username, userRequest.Email);
 
             if (userExists != null)
@@ -89,11 +90,33 @@ namespace Portfolio.Backend.Csharp.Services
                 userExists.Email = userRequest.Email;
                 userExists.PhoneNr = userRequest.PhoneNr;
 
-                return await _userRepository.UpdateUserAsync(userExists);
+                return _mapper.Map<UserResponse>(await _userRepository.UpdateUserAsync(userExists));
+            }
+            return null;
+        }
+
+        public async Task<UserResponse> GetUserResponse(UserRequest userRequest)
+        {
+            return _mapper.Map<UserResponse>(await GetUser(userRequest.Username, userRequest.Email));
+        }
+
+        public async Task<List<UserResponse>> GetAllUsersResponse()
+        {
+
+            List<User> ListOfUsers = await GetUsers();
+            if (!ListOfUsers.Any())
+            {
+                return null;
             }
 
-            Console.WriteLine("Dataset in userExists\nId: {0}", userExists.UserId);
-            return null;
+            List<UserResponse> MappedUserList = new List<UserResponse>();
+
+            foreach(User user in ListOfUsers)
+            {
+                MappedUserList.Add(_mapper.Map<UserResponse>(user));
+            }
+
+            return MappedUserList;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Portfolio.Backend.Csharp.Models.User;
 using Portfolio.Backend.Csharp.Models.User.Requests;
+using Portfolio.Backend.Csharp.Models.User.Responses;
 
 namespace Portfolio.Backend.Csharp.Mapper
 {
@@ -8,7 +9,9 @@ namespace Portfolio.Backend.Csharp.Mapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<UserRequest, User>().ReverseMap();
+            CreateMap<UserRequest, User>();
+            CreateMap<User, UserResponse>();
+            //CreateMap<List<User>, List<UserResponse>>();
         }
     }
 }

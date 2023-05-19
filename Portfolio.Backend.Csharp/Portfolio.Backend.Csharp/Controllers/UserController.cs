@@ -23,14 +23,14 @@ namespace Portfolio.Backend.Csharp.Controllers
         [Route("/GetUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            return Ok(await _userService.GetUsers());
+            return Ok(await _userService.GetAllUsersResponse());
         }
 
         [HttpPost]
         [Route("/GetUser")]
-        public async Task<IActionResult> GetUser([FromBody] UserLookupRequest lookupRequest)
+        public async Task<IActionResult> GetUser([FromBody] UserRequest userRequest)
         {
-            var user = await _userService.GetUser(lookupRequest.Username, lookupRequest.Email);
+            var user = await _userService.GetUserResponse(userRequest);
             if (user == null)
             {
                 return BadRequest("User Not Found");

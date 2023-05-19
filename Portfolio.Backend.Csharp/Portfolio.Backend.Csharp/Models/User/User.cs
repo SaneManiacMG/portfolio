@@ -29,6 +29,4 @@ namespace Portfolio.Backend.Csharp.Models.User
         public string PhoneNr { get; set; }
         public bool IsOwner { get; set; }
     }
-
-
 }
