@@ -20,7 +20,7 @@ namespace Portfolio.Backend.Csharp.Controllers
         [Route("/Login")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticationRequest authenticationRequest)
         {
-            return Ok();
+            return Ok(await _authenticationService.AuthenticateUser(authenticationRequest));
         }
 
         [HttpPost]

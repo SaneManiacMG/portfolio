@@ -17,40 +17,44 @@ namespace Portfolio.Backend.Csharp.Services
             _userService = userService;
         }
 
-        public Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest authenticationRequest)
+        public async Task<Authentication> AuthenticateUser(AuthenticationRequest authenticationRequest)
         {
-            var foundUser = _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
-            if (foundUser == null)
+            User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
+            Authentication loginDetails = await _authenticationRepository.GetUserByIdAsync(foundUser.UserId);
+
+            bool userFound = DoesUserExist(foundUser, loginDetails);
+
+            if (!userFound)
             {
                 return null;
             }
 
+            bool passwordMatch = BCrypt.Net.BCrypt.Verify(authenticationRequest.Password, loginDetails.Password);
 
-            return null;
+            Console.WriteLine("Password: {0}", passwordMatch);
+
+            if (!passwordMatch)
+            {
+                return null;
+            }
+
+            return loginDetails;
         }
 
         public async Task<Authentication> RegisterUser(AuthenticationRequest authenticationRequest)
         {
-            var foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
-            if (foundUser == null)
-            {
-                return null;
-            }
-
+            User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
             Authentication loginDetails = await _authenticationRepository.GetUserByIdAsync(foundUser.UserId);
-            if (loginDetails == null)
-            {
-                return null;
-            }
 
-            if (foundUser.UserId != loginDetails.Password)
+            bool userFound = DoesUserExist(foundUser, loginDetails);
+
+            if (userFound)
             {
                 return null;
             }
 
             loginDetails.Password = GenerateSaltAndHash(authenticationRequest.Password);
             loginDetails.AccountStatus = AccountStatus.Active;
-            Console.WriteLine("UserId: {0}\nPassword: {1}\nAccount Status: {2}", loginDetails.UserId, loginDetails.Password, loginDetails.AccountStatus);
 
             return await _authenticationRepository.UpdateUserAsync(loginDetails);
         }
@@ -59,6 +63,21 @@ namespace Portfolio.Backend.Csharp.Services
         {
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
             return BCrypt.Net.BCrypt.HashPassword(password, salt);
+        }
+
+        private bool DoesUserExist(User user, Authentication authentication)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (authentication == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
