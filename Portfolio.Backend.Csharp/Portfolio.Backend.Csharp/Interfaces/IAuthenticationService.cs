@@ -6,7 +6,7 @@ namespace Portfolio.Backend.Csharp.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest authenticationRequest);
+        Task<Authentication> AuthenticateUser(AuthenticationRequest authenticationRequest);
         Task<Authentication> RegisterUser(AuthenticationRequest authenticationRequest);
     }
 }
