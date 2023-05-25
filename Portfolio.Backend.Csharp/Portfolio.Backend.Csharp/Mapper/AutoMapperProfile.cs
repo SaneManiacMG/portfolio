@@ -14,7 +14,6 @@ namespace Portfolio.Backend.Csharp.Mapper
             CreateMap<User, UserResponse>();
             //CreateMap<List<User>, List<UserResponse>>();
             CreateMap<AuthenticationRequest, Authentication>();
-            CreateMap<Authentication, AuthenticationResponse>();
         }
     }
 }

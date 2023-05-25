@@ -21,7 +21,24 @@ namespace Portfolio.Backend.Csharp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Portfolio.Backend.Csharp.Models.User.User", b =>
+            modelBuilder.Entity("Portfolio.Backend.Csharp.Models.Entities.Authentication", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("LoginDetails");
+                });
+
+            modelBuilder.Entity("Portfolio.Backend.Csharp.Models.Entities.User", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

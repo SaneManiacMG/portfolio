@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
+using Portfolio.Backend.Csharp.Models.Enums;
 using Portfolio.Backend.Csharp.Models.Responses;
 using Portfolio.Backend.Csharp.Models.User.Requests;
 
@@ -11,12 +12,15 @@ namespace Portfolio.Backend.Csharp.Services
         private readonly IUserRepository _userRepository;
         private readonly ISequenceGenerator _sequenceGenerator;
         private readonly IMapper _mapper;
+        private readonly IAuthenticationRepository _authenticationRepository;
 
-        public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator, IMapper mapper)
+        public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator, IMapper mapper,
+            IAuthenticationRepository authenticationRepository)
         {
             _userRepository = userRepository;
             _sequenceGenerator = sequenceGenerator;
             _mapper = mapper;
+            _authenticationRepository = authenticationRepository;
         }
 
         public async Task<UserResponse> AddUser(UserRequest userRequest)
@@ -29,6 +33,10 @@ namespace Portfolio.Backend.Csharp.Services
 
             string generatedUserId = _sequenceGenerator.UserIdSequenceGenerator();
             User newUser = new User(generatedUserId, userRequest);
+
+            Authentication authentication = new Authentication(generatedUserId, generatedUserId, AccountStatus.Unverified);
+            await _authenticationRepository.CreateNewUserAsync(authentication);
+
             return _mapper.Map<UserResponse>(await _userRepository.AddUserAsync(newUser));
         }
 
@@ -42,7 +50,7 @@ namespace Portfolio.Backend.Csharp.Services
             return null;
         }
 
-        private async Task<User> GetUser(string username, string email)
+        public async Task<User> GetUser(string username, string email)
         {
             var usernameExistsByEmail = await GetUserByEmail(email);
             if (usernameExistsByEmail != null)

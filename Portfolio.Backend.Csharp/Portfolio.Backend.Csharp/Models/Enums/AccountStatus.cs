@@ -4,6 +4,7 @@
     {
         Active,
         Inactive,
-        Blocked
+        Blocked,
+        Unverified
     }
 }
