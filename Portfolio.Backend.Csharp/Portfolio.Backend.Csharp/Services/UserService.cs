@@ -12,15 +12,15 @@ namespace Portfolio.Backend.Csharp.Services
         private readonly IUserRepository _userRepository;
         private readonly ISequenceGenerator _sequenceGenerator;
         private readonly IMapper _mapper;
-        private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly ILoginRepository _loginRepository;
 
         public UserService(IUserRepository userRepository, ISequenceGenerator sequenceGenerator, IMapper mapper,
-            IAuthenticationRepository authenticationRepository)
+            ILoginRepository loginRepository)
         {
             _userRepository = userRepository;
             _sequenceGenerator = sequenceGenerator;
             _mapper = mapper;
-            _authenticationRepository = authenticationRepository;
+            _loginRepository = loginRepository;
         }
 
         public async Task<UserResponse> AddUser(UserRequest userRequest)
@@ -34,8 +34,8 @@ namespace Portfolio.Backend.Csharp.Services
             string generatedUserId = _sequenceGenerator.UserIdSequenceGenerator();
             User newUser = new User(generatedUserId, userRequest);
 
-            Authentication authentication = new Authentication(generatedUserId, generatedUserId, AccountStatus.Unverified);
-            await _authenticationRepository.CreateNewUserAsync(authentication);
+            Login authentication = new Login(generatedUserId, generatedUserId, AccountStatus.Unverified);
+            await _loginRepository.CreateNewUserAsync(authentication);
 
             return _mapper.Map<UserResponse>(await _userRepository.AddUserAsync(newUser));
         }

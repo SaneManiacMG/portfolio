@@ -1,4 +1,4 @@
-﻿using Portfolio.Backend.Csharp.Data;
+﻿using Portfolio.Backend.Csharp.Configs;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 using Portfolio.Backend.Csharp.Models.Enums;
@@ -12,24 +12,23 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Portfolio.Backend.Csharp.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class LoginService : ILoginService
     {
-        private readonly IAuthenticationRepository _authenticationRepository;
+        private readonly ILoginRepository _loginRepository;
         private readonly IUserService _userService;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IConfiguration _configuration;
 
-        public AuthenticationService(IAuthenticationRepository authenticationRepository, IUserService userService,
-            IOptions<JwtSettings> jwtSettings)
+        public LoginService(ILoginRepository loginRepository, IUserService userService, IConfiguration configuration)
         {
-            _authenticationRepository = authenticationRepository;
+            _loginRepository = loginRepository;
             _userService = userService;
-            _jwtSettings = jwtSettings.Value;
+            _configuration = configuration;
         }
 
-        public async Task<AuthenticationResponse> AuthenticateUser(AuthenticationRequest authenticationRequest)
+        public async Task<LoginResponse> AuthenticateUser(LoginRequest authenticationRequest)
         {
             User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
-            Authentication loginDetails = await _authenticationRepository.GetUserByIdAsync(foundUser.UserId);
+            Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
 
             bool userFound = DoesUserExist(foundUser, loginDetails);
 
@@ -45,15 +44,15 @@ namespace Portfolio.Backend.Csharp.Services
                 return null;
             }
 
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse(authenticationRequest.UserId, GenerateJwtToken(authenticationRequest.UserId));
+            LoginResponse authenticationResponse = new LoginResponse(CreateToken(foundUser));
 
             return authenticationResponse;
         }
 
-        public async Task<Authentication> RegisterUser(AuthenticationRequest authenticationRequest)
+        public async Task<Login> RegisterUser(LoginRequest authenticationRequest)
         {
             User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
-            Authentication loginDetails = await _authenticationRepository.GetUserByIdAsync(foundUser.UserId);
+            Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
 
             bool userFound = DoesUserExist(foundUser, loginDetails);
 
@@ -65,7 +64,7 @@ namespace Portfolio.Backend.Csharp.Services
             loginDetails.Password = GenerateSaltAndHash(authenticationRequest.Password);
             loginDetails.AccountStatus = AccountStatus.Active;
 
-            return await _authenticationRepository.UpdateUserAsync(loginDetails);
+            return await _loginRepository.UpdateUserAsync(loginDetails);
         }
 
         private string GenerateSaltAndHash(string password)
@@ -74,7 +73,7 @@ namespace Portfolio.Backend.Csharp.Services
             return BCrypt.Net.BCrypt.HashPassword(password, salt);
         }
 
-        private bool DoesUserExist(User user, Authentication authentication)
+        private bool DoesUserExist(User user, Login authentication)
         {
             if (user == null)
             {
@@ -89,21 +88,25 @@ namespace Portfolio.Backend.Csharp.Services
             return true;
         }
 
-        private string GenerateJwtToken(string userId)
+        private string CreateToken (User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            List<Claim> claims = new List<Claim>
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationMinutes),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                new Claim(ClaimTypes.UserData, user.UserId)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
         }
     }
 }

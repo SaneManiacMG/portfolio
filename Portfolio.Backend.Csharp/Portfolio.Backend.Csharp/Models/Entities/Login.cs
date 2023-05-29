@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Portfolio.Backend.Csharp.Models.Entities
 {
-    public class Authentication
+    public class Login
     {
 
-        public Authentication(string userId, string password, AccountStatus accountStatus)
+        public Login(string userId, string password, AccountStatus accountStatus)
         {
             UserId = userId;
             Password = password;
             AccountStatus = accountStatus;
         }
 
-        public Authentication()
+        public Login()
         {
         }
 

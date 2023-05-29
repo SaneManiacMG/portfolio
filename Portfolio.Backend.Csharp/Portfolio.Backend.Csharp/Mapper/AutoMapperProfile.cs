@@ -13,7 +13,7 @@ namespace Portfolio.Backend.Csharp.Mapper
             CreateMap<UserRequest, User>();
             CreateMap<User, UserResponse>();
             //CreateMap<List<User>, List<UserResponse>>();
-            CreateMap<AuthenticationRequest, Authentication>();
+            CreateMap<LoginRequest, Login>();
         }
     }
 }

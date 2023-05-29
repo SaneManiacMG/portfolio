@@ -1,24 +1,24 @@
-﻿using Portfolio.Backend.Csharp.Data;
+﻿using Portfolio.Backend.Csharp.Configs;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Repositories
 {
-    public class AuthenticationRepository : IAuthenticationRepository
+    public class LoginRepository : ILoginRepository
     {
         private readonly PortfolioDbContext _dbContext;
-        public AuthenticationRepository(PortfolioDbContext portfolioDbContext) {
+        public LoginRepository(PortfolioDbContext portfolioDbContext) {
             _dbContext = portfolioDbContext;        
         }
 
-        public async Task<Authentication> CreateNewUserAsync(Authentication authentication)
+        public async Task<Login> CreateNewUserAsync(Login authentication)
         {
             _dbContext.Add(authentication);
             await _dbContext.SaveChangesAsync();
             return authentication;
         }
 
-        public async Task<Authentication> DeleteUserAsync(Authentication authentication)
+        public async Task<Login> DeleteUserAsync(Login authentication)
         {
             _dbContext.LoginDetails.Remove(authentication);
             await _dbContext.SaveChangesAsync();
@@ -26,12 +26,12 @@ namespace Portfolio.Backend.Csharp.Repositories
             return authentication;
         }
 
-        public async Task<Authentication> GetUserByIdAsync(string userId)
+        public async Task<Login> GetUserByIdAsync(string userId)
         {
             return await _dbContext.LoginDetails.FindAsync(userId);
         }
 
-        public async Task<Authentication> UpdateUserAsync(Authentication authentication)
+        public async Task<Login> UpdateUserAsync(Login authentication)
         {
             _dbContext.Update(authentication);
             await _dbContext.SaveChangesAsync();

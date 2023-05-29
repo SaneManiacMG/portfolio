@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Portfolio.Backend.Csharp.Models.Entities;
 
-namespace Portfolio.Backend.Csharp.Data
+namespace Portfolio.Backend.Csharp.Configs
 {
     public class PortfolioDbContext : DbContext
     {
@@ -10,6 +10,6 @@ namespace Portfolio.Backend.Csharp.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Authentication> LoginDetails { get; set; }
+        public DbSet<Login> LoginDetails { get; set; }
     }
 }
