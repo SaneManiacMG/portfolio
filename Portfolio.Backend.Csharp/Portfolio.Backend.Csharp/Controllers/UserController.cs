@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Portfolio.Backend.Csharp.Configs;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.User.Requests;
 
@@ -8,19 +9,20 @@ namespace Portfolio.Backend.Csharp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Admin, Owner")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly JwtAuthenticationManager _jwtAuthenticationManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, JwtAuthenticationManager jwtAuthenticationManager)
         {
             _userService = userService;
+            _jwtAuthenticationManager = jwtAuthenticationManager;
         }
 
         [HttpGet]
         [Route("/GetUsers")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsers()
         {
             return Ok(await _userService.GetAllUsersResponse());

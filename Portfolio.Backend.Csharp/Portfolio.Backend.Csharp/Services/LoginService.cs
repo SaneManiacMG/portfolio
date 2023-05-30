@@ -1,11 +1,10 @@
-﻿using Portfolio.Backend.Csharp.Interfaces;
+﻿using Microsoft.IdentityModel.Tokens;
+using Portfolio.Backend.Csharp.Configs;
+using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 using Portfolio.Backend.Csharp.Models.Enums;
 using Portfolio.Backend.Csharp.Models.Requests;
 using Portfolio.Backend.Csharp.Models.Responses;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Portfolio.Backend.Csharp.Services
 {
@@ -13,16 +12,16 @@ namespace Portfolio.Backend.Csharp.Services
     {
         private readonly ILoginRepository _loginRepository;
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
+        private readonly JwtAuthenticationManager _jwtAuthenticationManager;
 
-        public LoginService(ILoginRepository loginRepository, IUserService userService, IConfiguration configuration)
+        public LoginService(ILoginRepository loginRepository, IUserService userService, JwtAuthenticationManager jwtAuthenticationManager)
         {
             _loginRepository = loginRepository;
             _userService = userService;
-            _configuration = configuration;
+            _jwtAuthenticationManager = jwtAuthenticationManager;
         }
 
-        public async Task<LoginResponse> AuthenticateUser(LoginRequest authenticationRequest)
+        public async Task<string> AuthenticateUser(LoginRequest authenticationRequest)
         {
             User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
             Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
@@ -41,9 +40,7 @@ namespace Portfolio.Backend.Csharp.Services
                 return null;
             }
 
-            LoginResponse authenticationResponse = new LoginResponse(CreateToken(foundUser));
-
-            return authenticationResponse;
+            return _jwtAuthenticationManager.Authenticate(foundUser.UserId);
         }
 
         public async Task<Login> RegisterUser(LoginRequest authenticationRequest)
@@ -86,28 +83,6 @@ namespace Portfolio.Backend.Csharp.Services
             }
 
             return true;
-        }
-
-        private string CreateToken (User user)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.UserData, user.UserId),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Key").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
         }
     }
 }

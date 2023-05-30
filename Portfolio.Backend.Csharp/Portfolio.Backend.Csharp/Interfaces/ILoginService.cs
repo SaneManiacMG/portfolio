@@ -6,7 +6,7 @@ namespace Portfolio.Backend.Csharp.Interfaces
 {
     public interface ILoginService
     {
-        Task<LoginResponse> AuthenticateUser(LoginRequest authenticationRequest);
+        Task<string> AuthenticateUser(LoginRequest authenticationRequest);
         Task<Login> RegisterUser(LoginRequest authenticationRequest);
     }
 }

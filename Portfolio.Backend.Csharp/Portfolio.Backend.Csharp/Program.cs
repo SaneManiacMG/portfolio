@@ -16,32 +16,40 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// jwt authentication
+var key = "SaneManiacWorksSecurityOchoMuerte90";
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+builder.Services.AddSingleton<JwtAuthenticationManager>(new JwtAuthenticationManager(key));
+
+// dependency injection here
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
+// automapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+// building db context
 builder.Services.AddDbContext<PortfolioDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("PortfolioApiConnectionString")));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "SaneManiacWorks",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-            .GetBytes("2dae84f846e4f4b158a8d26681707f4338495bc7ab68151d7f7679cc5e56202dd3da0d356da007a7c28cb0b780418f4f3246769972d6feaa8f610c7d1e7ecf6a"))
-        };
-    });
 
 var app = builder.Build();
 
