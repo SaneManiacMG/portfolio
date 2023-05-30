@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Backend.Csharp.Interfaces;
-using Portfolio.Backend.Csharp.Models.User;
 using Portfolio.Backend.Csharp.Models.User.Requests;
 
 namespace Portfolio.Backend.Csharp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Admin, Owner")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -19,6 +20,7 @@ namespace Portfolio.Backend.Csharp.Controllers
 
         [HttpGet]
         [Route("/GetUsers")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsers()
         {
             return Ok(await _userService.GetAllUsersResponse());
@@ -39,6 +41,7 @@ namespace Portfolio.Backend.Csharp.Controllers
 
         [HttpPost]
         [Route("/AddUser")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddUser([FromBody] UserRequest userRequest)
         {
             var newUser = await _userService.AddUser(userRequest);

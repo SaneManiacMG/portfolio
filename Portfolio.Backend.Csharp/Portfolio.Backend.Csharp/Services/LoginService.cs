@@ -1,13 +1,10 @@
-﻿using Portfolio.Backend.Csharp.Configs;
-using Portfolio.Backend.Csharp.Interfaces;
+﻿using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 using Portfolio.Backend.Csharp.Models.Enums;
 using Portfolio.Backend.Csharp.Models.Requests;
 using Portfolio.Backend.Csharp.Models.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Portfolio.Backend.Csharp.Services
@@ -55,14 +52,17 @@ namespace Portfolio.Backend.Csharp.Services
             Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
 
             bool userFound = DoesUserExist(foundUser, loginDetails);
+            Console.WriteLine("User found: {0}", userFound);
 
-            if (userFound)
+            if (!userFound)
             {
                 return null;
             }
 
+            Console.WriteLine("Generate hashed password");
             loginDetails.Password = GenerateSaltAndHash(authenticationRequest.Password);
             loginDetails.AccountStatus = AccountStatus.Active;
+            Console.WriteLine("Setting status to {0}", loginDetails.AccountStatus);
 
             return await _loginRepository.UpdateUserAsync(loginDetails);
         }
@@ -92,10 +92,11 @@ namespace Portfolio.Backend.Csharp.Services
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.UserData, user.UserId)
+                new Claim(ClaimTypes.UserData, user.UserId),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Key").Value));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
