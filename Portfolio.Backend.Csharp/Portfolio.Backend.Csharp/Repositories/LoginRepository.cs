@@ -4,6 +4,7 @@ using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Repositories
 {
+#nullable disable
     public class LoginRepository : ILoginRepository
     {
         private readonly PortfolioDbContext _dbContext;
@@ -33,6 +34,7 @@ namespace Portfolio.Backend.Csharp.Repositories
 
         public async Task<Login> UpdateUserAsync(Login authentication)
         {
+            authentication.DateModified = DateTime.Now;
             _dbContext.Update(authentication);
             await _dbContext.SaveChangesAsync();
 

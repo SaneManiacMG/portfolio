@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Portfolio.Backend.Csharp.Models.Entities
 {
-    public class User
+    public class User : UserBase
     {
-        public User(string generatedUserId, UserRequest newUserDetails)
+        public User(string generatedUserId, UserRequest newUserDetails, DateTime createDate)
         {
             UserId = generatedUserId;
             Username = newUserDetails.Username;
@@ -15,14 +15,14 @@ namespace Portfolio.Backend.Csharp.Models.Entities
             Email = newUserDetails.Email;
             PhoneNr = newUserDetails.PhoneNr;
             Role = Role.Visitor;
+            DateCreated = createDate;
+            DateModified = createDate;
         }
 
         public User()
         {
         }
 
-        [Key]
-        public string UserId { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

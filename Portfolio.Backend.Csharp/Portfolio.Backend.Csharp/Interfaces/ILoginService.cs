@@ -1,12 +1,11 @@
-﻿using Portfolio.Backend.Csharp.Models.Entities;
-using Portfolio.Backend.Csharp.Models.Requests;
-using Portfolio.Backend.Csharp.Models.Responses;
+﻿using Portfolio.Backend.Csharp.Models.Requests;
 
 namespace Portfolio.Backend.Csharp.Interfaces
 {
     public interface ILoginService
     {
-        Task<string> AuthenticateUser(LoginRequest authenticationRequest);
-        Task<Login> RegisterUser(LoginRequest authenticationRequest);
+        Task<string> AuthenticateUser(LoginRequest loginRequest);
+        Task<string> RegisterUser(LoginRequest logRequest);
+        Task<string> UpdatePassword(LoginRequest loginRequest);
     }
 }

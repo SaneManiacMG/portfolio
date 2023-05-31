@@ -5,6 +5,7 @@ using Portfolio.Backend.Csharp.Models.Entities;
 
 namespace Portfolio.Backend.Csharp.Repositories
 {
+#nullable disable
     public class UserRepository : IUserRepository
     {
         private readonly PortfolioDbContext _dbContext;
@@ -32,16 +33,12 @@ namespace Portfolio.Backend.Csharp.Repositories
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-#pragma warning disable CS8603 // Possible null reference return.
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
-#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public async Task<User> GetUserByIdAsync(string userId)
         {
-#pragma warning disable CS8603 // Possible null reference return.
             return await _dbContext.Users.FindAsync(userId);
-#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public Task<User> GetUserByUsernameAsync(string username)
@@ -56,6 +53,7 @@ namespace Portfolio.Backend.Csharp.Repositories
 
         public async Task<User> UpdateUserAsync(User user)
         {
+            user.DateModified = DateTime.Now;
             _dbContext.Update(user);
             await _dbContext.SaveChangesAsync();
 

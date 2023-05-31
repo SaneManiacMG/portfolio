@@ -7,6 +7,7 @@ using Portfolio.Backend.Csharp.Models.User.Requests;
 
 namespace Portfolio.Backend.Csharp.Services
 {
+#nullable disable
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
@@ -32,9 +33,9 @@ namespace Portfolio.Backend.Csharp.Services
             }
 
             string generatedUserId = _sequenceGenerator.UserIdSequenceGenerator();
-            User newUser = new User(generatedUserId, userRequest);
+            User newUser = new User(generatedUserId, userRequest, DateTime.Now);
 
-            Login authentication = new Login(generatedUserId, generatedUserId, AccountStatus.Unverified);
+            Login authentication = new Login(generatedUserId, generatedUserId, DateTime.Now);
             await _loginRepository.CreateNewUserAsync(authentication);
 
             return _mapper.Map<UserResponse>(await _userRepository.AddUserAsync(newUser));

@@ -4,10 +4,10 @@ using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Entities;
 using Portfolio.Backend.Csharp.Models.Enums;
 using Portfolio.Backend.Csharp.Models.Requests;
-using Portfolio.Backend.Csharp.Models.Responses;
 
 namespace Portfolio.Backend.Csharp.Services
 {
+#nullable disable
     public class LoginService : ILoginService
     {
         private readonly ILoginRepository _loginRepository;
@@ -43,25 +43,23 @@ namespace Portfolio.Backend.Csharp.Services
             return _jwtAuthenticationManager.Authenticate(foundUser.UserId);
         }
 
-        public async Task<Login> RegisterUser(LoginRequest authenticationRequest)
+        public async Task<string> RegisterUser(LoginRequest authenticationRequest)
         {
             User foundUser = await _userService.GetUser(authenticationRequest.UserId, authenticationRequest.UserId);
             Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
 
             bool userFound = DoesUserExist(foundUser, loginDetails);
-            Console.WriteLine("User found: {0}", userFound);
 
             if (!userFound)
             {
                 return null;
             }
 
-            Console.WriteLine("Generate hashed password");
             loginDetails.Password = GenerateSaltAndHash(authenticationRequest.Password);
             loginDetails.AccountStatus = AccountStatus.Active;
-            Console.WriteLine("Setting status to {0}", loginDetails.AccountStatus);
 
-            return await _loginRepository.UpdateUserAsync(loginDetails);
+            await _loginRepository.UpdateUserAsync(loginDetails);
+            return "User register for login account";
         }
 
         private string GenerateSaltAndHash(string password)
@@ -83,6 +81,23 @@ namespace Portfolio.Backend.Csharp.Services
             }
 
             return true;
+        }
+
+        public async Task<string> UpdatePassword(LoginRequest loginRequest)
+        {
+            User foundUser = await _userService.GetUser(loginRequest.UserId, loginRequest.UserId);
+            Login loginDetails = await _loginRepository.GetUserByIdAsync(foundUser.UserId);
+
+            bool userFound = DoesUserExist(foundUser, loginDetails);
+
+            if (!userFound)
+            {
+                return null;
+            }
+
+            loginDetails.Password = GenerateSaltAndHash(loginRequest.Password);
+            await _loginRepository.UpdateUserAsync(loginDetails);
+            return "Password Updated";
         }
     }
 }

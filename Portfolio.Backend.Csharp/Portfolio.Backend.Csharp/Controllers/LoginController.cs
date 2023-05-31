@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Portfolio.Backend.Csharp.Configs;
 using Portfolio.Backend.Csharp.Interfaces;
 using Portfolio.Backend.Csharp.Models.Requests;
-using Portfolio.Backend.Csharp.Services;
 
 namespace Portfolio.Backend.Csharp.Controllers
 {
@@ -23,14 +23,40 @@ namespace Portfolio.Backend.Csharp.Controllers
         [Route("/Login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginRequest loginRequest)
         {
-            return Ok(await _loginService.AuthenticateUser(loginRequest));
+            string response = await _loginService.AuthenticateUser(loginRequest);
+            if (response == null)
+            {
+                return NotFound("Invalid Username/Email or password");
+            }
+
+            return Ok(response);
         }
 
         [HttpPost]
         [Route("/Register")]
         public async Task<IActionResult> RegisterUser([FromBody] LoginRequest loginRequest)
         {
-            return Ok(await _loginService.RegisterUser(loginRequest));
+            string response = await _loginService.RegisterUser(loginRequest);
+            if (response == null)
+            {
+                return NotFound("Invalid Username/Email or Password");
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("/ResetPassword")]
+        [Authorize]
+        public async Task<IActionResult> ResetPassword([FromBody] LoginRequest loginRequest)
+        {
+            string response = await _loginService.UpdatePassword(loginRequest);
+            if (response == null)
+            {
+                return NotFound("Invalid Username/Email or Password");
+            }
+
+            return Ok(response);
         }
     }
 }
